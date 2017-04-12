@@ -13,4 +13,7 @@ class Plot (
   val yValues: Iterable[Double]
 ) {
 
+  override def toString: String = {
+    s"Plot($plotType, $width, $height, $title, $xTitle, $yTitle, $xValues, $yValues)"
+  }
 }
