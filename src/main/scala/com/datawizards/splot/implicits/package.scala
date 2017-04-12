@@ -10,9 +10,13 @@ package object implicits {
   class IterablePlot[T](iterable: Iterable[T]) {
     def plotBar(values: T => Double): Unit =
       new PlotBuilder[T](iterable).bar(values).display()
+
+    def plotScatter(x: T => Double, y: T => Double): Unit =
+      new PlotBuilder[T](iterable).scatter(x, y).display()
   }
 
   class IterableDoublePlot(iterable: Iterable[Double]) {
-    def plotBar(): Unit = new PlotBuilder[Double](iterable).bar(x => x).display()
+    def plotBar(): Unit =
+      new PlotBuilder[Double](iterable).bar(x => x).display()
   }
 }

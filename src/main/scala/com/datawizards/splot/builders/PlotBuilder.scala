@@ -1,7 +1,6 @@
 package com.datawizards.splot.builders
 
 import com.datawizards.splot.configuration.SPlotConfiguration
-import com.datawizards.splot.model.PlotType.PlotType
 import com.datawizards.splot.model.{Plot, PlotType}
 
 class PlotBuilder[T](data: Iterable[T]) {
@@ -18,7 +17,14 @@ class PlotBuilder[T](data: Iterable[T]) {
   def bar(values: T => Double): this.type = {
     plotType = PlotType.Bar
     yValues = data.map(values)
-    xValues = data.zipWithIndex.map(_._2.toDouble)
+    xValues = data.zipWithIndex.map(1 + _._2.toDouble)
+    this
+  }
+
+  def scatter(x: T => Double, y: T => Double): this.type = {
+    plotType = PlotType.Scatter
+    yValues = data.map(y)
+    xValues = data.map(x)
     this
   }
 
@@ -40,5 +46,3 @@ class PlotBuilder[T](data: Iterable[T]) {
   }
 
 }
-
-

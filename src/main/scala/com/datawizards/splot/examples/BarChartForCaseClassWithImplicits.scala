@@ -9,5 +9,5 @@ object BarChartForCaseClassWithImplicits extends App {
     Person("p1", 20),
     Person("p2", 30),
     Person("p3", 40)
-  ).plotBar(p => p.age)
+  ).plotBar(_.age)
 }
