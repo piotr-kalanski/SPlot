@@ -1,7 +1,7 @@
 package com.datawizards.splot.builders
 
 import com.datawizards.splot.configuration.SPlotConfiguration
-import com.datawizards.splot.model.{Plot, PlotType}
+import com.datawizards.splot.model.{Plot, PlotType, PlotsGrid}
 
 class PlotBuilder[T](data: Iterable[T]) {
 
@@ -13,6 +13,9 @@ class PlotBuilder[T](data: Iterable[T]) {
   private var yTitle: String = "y"
   private var xValues = Iterable[Double]()
   private var yValues = Iterable[Double]()
+  private var gridPlot = false
+  private var colsGroupFunction: T => Any = _
+  private var rowsGroupFunction: T => Any = _
 
   /**
     * Select bar chart
@@ -75,11 +78,25 @@ class PlotBuilder[T](data: Iterable[T]) {
     this
   }
 
+  def colsBy(cols: T => Any): this.type = {
+    gridPlot = true
+    this.colsGroupFunction = cols
+    this
+  }
+
+  def rowsBy(rows: T => Any): this.type = {
+    gridPlot = true
+    this.rowsGroupFunction = rows
+    this
+  }
+
   /**
     * Display chart using all selected configuration values
     */
   def display(): Unit = {
-    SPlotConfiguration.deviceType.plot(buildPlot())
+    val device = SPlotConfiguration.deviceType
+    if(gridPlot) device.plot(buildPlotsGrid())
+    else device.plot(buildPlot())
   }
 
   private def buildPlot(): Plot = {
@@ -92,6 +109,17 @@ class PlotBuilder[T](data: Iterable[T]) {
       yTitle = yTitle,
       xValues = xValues,
       yValues = yValues
+    )
+  }
+
+  private def buildPlotsGrid(): PlotsGrid = {
+    PlotsGrid(
+      data = data,
+      plotType = plotType,
+      xValues = xValues,
+      yValues = yValues,
+      colsGroupFunction = colsGroupFunction,
+      rowsGroupFunction = rowsGroupFunction
     )
   }
 

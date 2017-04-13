@@ -121,6 +121,19 @@ val data = Seq(
 data.plotLine(_.age, _.income)
 ```
 
+# Multi charts
+
+## Grouping by cols and/or rows
+
+```scala
+people
+    .buildPlot()
+    .scatter(_.age, _.income)
+    .colsBy(_.country)
+    .rowsBy(_.education)
+    .display()
+```
+
 # Customizations
 
 ## Change chart title
