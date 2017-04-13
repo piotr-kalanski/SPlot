@@ -9,28 +9,34 @@ import org.knowm.xchart._
 
 object DeviceTypes {
 
-  val PopupWindowDevice = new Device {
+  val popupWindowDevice = PopupWindowDevice
+
+  object PopupWindowDevice extends Device {
 
     override def plot(plot: Plot): Unit = {
       plot.plotType match {
         case PlotType.Bar => displayCategoryChart(plot)
-        case PlotType.Scatter => displayScatterChartChart(plot)
+        case PlotType.Scatter => displayScatterChart(plot)
+        case PlotType.Line => displayLineChart(plot)
         case _ => throw new Exception("Unknown plot type")
       }
-
     }
-  }
 
-  val default = PopupWindowDevice
+    private def displayCategoryChart(plot: Plot): Unit = {
+      new SwingWrapper[CategoryChart](buildCategoryChart(plot)).displayChart()
+    }
 
-  private def displayCategoryChart(plot: Plot): Unit = {
-    new SwingWrapper[CategoryChart](buildCategoryChart(plot)).displayChart()
-  }
+    private def displayScatterChart(plot: Plot): Unit = {
+      val chart = buildXYChart(plot)
+      chart.getStyler.setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter)
+      new SwingWrapper[XYChart](chart).displayChart()
+    }
 
-  private def displayScatterChartChart(plot: Plot): Unit = {
-    val chart = buildXYChart(plot)
-    chart.getStyler.setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter)
-    new SwingWrapper[XYChart](chart).displayChart()
+    private def displayLineChart(plot: Plot): Unit = {
+      val chart = buildXYChart(plot)
+      new SwingWrapper[XYChart](chart).displayChart()
+    }
+
   }
 
   private def buildCategoryChart(plot: Plot): CategoryChart = {
