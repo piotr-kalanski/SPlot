@@ -1,6 +1,6 @@
-package com.datawizards.splot.examples
+package com.datawizards.splot.examples.bar
 
-import com.datawizards.splot.implicits._
+import com.datawizards.splot.api.implicits._
 
 case class Person(name: String, age: Int)
 

@@ -1,6 +1,6 @@
-package com.datawizards.splot.examples
+package com.datawizards.splot.examples.scatter
 
-import com.datawizards.splot.implicits._
+import com.datawizards.splot.api.implicits._
 
 case class AgeIncome(age: Int, income: Double)
 

@@ -11,14 +11,14 @@ SPlot is Scala library for data visualization.
 
 Import implicits, which adds methods to Scala collection enabling plotting:
 ```scala
-import com.datawizards.splot.implicits._
+import com.datawizards.splot.api.implicits._
 ```
 
 # Basic example
 
 To plot bar chart using Scala sequence you need to call one method:
 ```scala
-import com.datawizards.splot.implicits._
+import com.datawizards.splot.api.implicits._
 
 Seq(1.0, 4.0, 9.0).plotBar()
 ```
@@ -30,7 +30,7 @@ Seq(1.0, 4.0, 9.0).plotBar()
 
 Please note that all below examples **require** importing:
 ```scala
-import com.datawizards.splot.implicits._
+import com.datawizards.splot.api.implicits._
 ```
 
 ## Bar
