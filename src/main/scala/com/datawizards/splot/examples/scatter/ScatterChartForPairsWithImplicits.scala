@@ -4,10 +4,10 @@ import com.datawizards.splot.api.implicits._
 
 object ScatterChartForPairsWithImplicits extends App {
   val data = Seq(
-    (1, 1),
-    (2, 4),
-    (3, 9)
+    (1.0, 1.0),
+    (2.0, 4.0),
+    (3.0, 9.0)
   )
 
-  data.plotScatter(_._1, _._2)
+  data.plotScatter()
 }

@@ -14,6 +14,11 @@ class PlotBuilder[T](data: Iterable[T]) {
   private var xValues = Iterable[Double]()
   private var yValues = Iterable[Double]()
 
+  /**
+    * Select bar chart
+    *
+    * @param values function mapping element of collection to values of bar chart
+    */
   def bar(values: T => Double): this.type = {
     plotType = PlotType.Bar
     yValues = data.map(values)
@@ -21,13 +26,33 @@ class PlotBuilder[T](data: Iterable[T]) {
     this
   }
 
+  /**
+    * Select scatter chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param y function mapping element of collection to y values
+    */
   def scatter(x: T => Double, y: T => Double): this.type = {
     plotType = PlotType.Scatter
-    yValues = data.map(y)
-    xValues = data.map(x)
+    mapXY(x, y)
     this
   }
 
+  /**
+    * Select line chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param y function mapping element of collection to y values
+    */
+  def line(x: T => Double, y: T => Double): this.type = {
+    plotType = PlotType.Line
+    mapXY(x, y)
+    this
+  }
+
+  /**
+    * Display chart using all selected configuration values
+    */
   def display(): Unit = {
     SPlotConfiguration.deviceType.plot(buildPlot())
   }
@@ -45,4 +70,8 @@ class PlotBuilder[T](data: Iterable[T]) {
     )
   }
 
+  private def mapXY(x: T => Double, y: T => Double): Unit = {
+    yValues = data.map(y)
+    xValues = data.map(x)
+  }
 }

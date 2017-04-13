@@ -1,4 +1,4 @@
-package com.datawizards.splot
+package com.datawizards.splot.api
 
 import com.datawizards.splot.builders.PlotBuilder
 
@@ -7,16 +7,55 @@ package object implicits {
 
   implicit def IterableDouble2IterableDoublePlot(x: Iterable[Double]): IterableDoublePlot = new IterableDoublePlot(x)
 
-  class IterablePlot[T](iterable: Iterable[T]) {
-    def plotBar(values: T => Double): Unit =
-      new PlotBuilder[T](iterable).bar(values).display()
+  implicit def IterablePairDouble2IterablePairDoublePlot(x: Iterable[(Double,Double)]): IterablePairDoublePlot = new IterablePairDoublePlot(x)
 
-    def plotScatter(x: T => Double, y: T => Double): Unit =
-      new PlotBuilder[T](iterable).scatter(x, y).display()
+  class IterablePlot[T](iterable: Iterable[T]) {
+    private val plotBuilder = new PlotBuilder[T](iterable)
+
+    /**
+      * Plot bar chart
+      *
+      * @param values function mapping element of collection to values
+      */
+    def plotBar(values: T => Double): Unit = plotBuilder.bar(values).display()
+
+    /**
+      * Plot scatter chart
+      *
+      * @param x function mapping element of collection to x values
+      * @param y function mapping element of collection to y values
+      */
+    def plotScatter(x: T => Double, y: T => Double): Unit = plotBuilder.scatter(x, y).display()
+
+    /**
+      * Plot line chart
+      *
+      * @param x function mapping element of collection to x values
+      * @param y function mapping element of collection to y values
+      */
+    def plotLine(x: T => Double, y: T => Double): Unit = plotBuilder.line(x, y).display()
   }
 
   class IterableDoublePlot(iterable: Iterable[Double]) {
-    def plotBar(): Unit =
-      new PlotBuilder[Double](iterable).bar(x => x).display()
+    private val plotBuilder = new PlotBuilder[Double](iterable)
+
+    /**
+      * Plot bar chart
+      */
+    def plotBar(): Unit = plotBuilder.bar(x => x).display()
+  }
+
+  class IterablePairDoublePlot(iterable: Iterable[(Double, Double)]) {
+    private val plotBuilder = new PlotBuilder[(Double, Double)](iterable)
+
+    /**
+      * Plot scatter chart
+      */
+    def plotScatter(): Unit = plotBuilder.scatter(_._1, _._2).display()
+
+    /**
+      * Plot line chart
+      */
+    def plotLine(): Unit = plotBuilder.line(_._1, _._2).display()
   }
 }

@@ -6,6 +6,6 @@ import com.datawizards.splot.theme.{PlotTheme, PlotThemes}
 object SPlotConfiguration {
   var DefaultWidth = 800
   var DefaultHeight = 600
-  var deviceType: Device = DeviceTypes.default
-  var plotTheme: PlotTheme = PlotThemes.default
+  var deviceType: Device = DeviceTypes.popupWindowDevice
+  var plotTheme: PlotTheme = PlotThemes.ggPlotTheme
 }

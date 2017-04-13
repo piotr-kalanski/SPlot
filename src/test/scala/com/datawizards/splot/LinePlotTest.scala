@@ -1,23 +1,22 @@
 package com.datawizards.splot
 
+import com.datawizards.splot.api.implicits._
+import com.datawizards.splot.model.PlotType
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
-import com.datawizards.splot.api.implicits._
-import com.datawizards.splot.model.PlotType
-
 @RunWith(classOf[JUnitRunner])
-class ScatterPlotTest extends SPlotBaseTest {
+class LinePlotTest extends SPlotBaseTest {
   test("Scatter") {
     val xs = Seq(1.0, 2.0, 3.0)
     val ys = xs.map(x => x*x)
     val data = xs zip ys
 
-    data.plotScatter()
+    data.plotLine()
 
     val plot = getLastPlot
 
-    assertResult(PlotType.Scatter) {
+    assertResult(PlotType.Line) {
       plot.plotType
     }
 

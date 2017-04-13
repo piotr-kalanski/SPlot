@@ -27,6 +27,7 @@ Seq(1.0, 4.0, 9.0).plotBar()
 
 - Bar
 - Scatter
+- Line
 
 Please note that all below examples **require** importing:
 ```scala
@@ -62,12 +63,12 @@ data.plotBar(_.age)
 
 ```scala
 val data = Seq(
-    (1, 1),
-    (2, 4),
-    (3, 9)
+    (1.0, 1.0),
+    (2.0, 4.0),
+    (3.0, 9.0)
 )
 
-data.plotScatter(_._1, _._2)
+data.plotScatter()
 ```
 
 ### Scatter chart for sequence of case class
@@ -86,4 +87,36 @@ val data = Seq(
 )
 
 data.plotScatter(_.age, _.income)
+```
+
+## Line
+
+### Line chart for sequence of numbers
+
+```scala
+val data = Seq(
+    (1.0, 1.0),
+    (2.0, 4.0),
+    (3.0, 9.0)
+)
+
+data.plotLine()
+```
+
+### Line chart for sequence of case class
+
+```scala
+case class AgeIncome(age: Int, income: Double)
+
+val data = Seq(
+    AgeIncome(20, 1000.0),
+    AgeIncome(25, 2000.0),
+    AgeIncome(30, 2500.0),
+    AgeIncome(35, 3000.0),
+    AgeIncome(40, 3500.0),
+    AgeIncome(45, 3000.0),
+    AgeIncome(50, 2500.0)
+)
+
+data.plotLine(_.age, _.income)
 ```
