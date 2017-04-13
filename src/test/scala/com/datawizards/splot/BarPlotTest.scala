@@ -27,4 +27,28 @@ class BarPlotTest extends SPlotBaseTest {
       plot.yValues
     }
   }
+
+  test("Change title") {
+    val data = Seq(1.0, 4.0, 9.0)
+
+    data
+      .buildPlot()
+      .bar(identity)
+      .titles("main title", "x title", "y title")
+      .display()
+
+    val plot = getLastPlot
+
+    assertResult("main title") {
+      plot.title
+    }
+
+    assertResult("x title") {
+      plot.xTitle
+    }
+
+    assertResult("y title") {
+      plot.yTitle
+    }
+  }
 }
