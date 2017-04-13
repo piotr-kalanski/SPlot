@@ -13,6 +13,11 @@ package object implicits {
     private val plotBuilder = new PlotBuilder[T](iterable)
 
     /**
+      * Start building new plot with custom settings
+      */
+    def buildPlot(): PlotBuilder[T] = plotBuilder
+
+    /**
       * Plot bar chart
       *
       * @param values function mapping element of collection to values
@@ -40,6 +45,11 @@ package object implicits {
     private val plotBuilder = new PlotBuilder[Double](iterable)
 
     /**
+      * Start building new plot with custom settings
+      */
+    def buildPlot(): PlotBuilder[Double] = plotBuilder
+
+    /**
       * Plot bar chart
       */
     def plotBar(): Unit = plotBuilder.bar(x => x).display()
@@ -47,6 +57,11 @@ package object implicits {
 
   class IterablePairDoublePlot(iterable: Iterable[(Double, Double)]) {
     private val plotBuilder = new PlotBuilder[(Double, Double)](iterable)
+
+    /**
+      * Start building new plot with custom settings
+      */
+    def buildPlot(): PlotBuilder[(Double, Double)] = plotBuilder
 
     /**
       * Plot scatter chart

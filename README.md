@@ -120,3 +120,21 @@ val data = Seq(
 
 data.plotLine(_.age, _.income)
 ```
+
+# Customizations
+
+## Change chart title
+
+```scala
+val data = Seq(1.0, 4.0, 9.0)
+
+data
+    .buildPlot()
+    .bar(identity)
+    .titles("Example bar chart", "x values", "y values")
+    .display()
+```
+
+# Contact
+
+piotr.kalanski@gmail.com

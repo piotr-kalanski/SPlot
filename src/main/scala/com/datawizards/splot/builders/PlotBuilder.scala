@@ -51,6 +51,31 @@ class PlotBuilder[T](data: Iterable[T]) {
   }
 
   /**
+    * Change chart title
+    *
+    * @param title new chart title
+    */
+  def title(title: String): this.type = {
+    this.title = title
+    this
+  }
+
+  /**
+    * Change main title and axis titles
+    *
+    * @param title new chart title
+    * @param xTitle new x axis title
+    * @param yTitle new y axis title
+    * @return
+    */
+  def titles(title: String, xTitle: String, yTitle: String): this.type = {
+    this.title = title
+    this.xTitle = xTitle
+    this.yTitle = yTitle
+    this
+  }
+
+  /**
     * Display chart using all selected configuration values
     */
   def display(): Unit = {
