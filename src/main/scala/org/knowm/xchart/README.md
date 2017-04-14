@@ -1,0 +1,1 @@
+This package contains extensions to xchart library (http://knowm.org/open-source/xchart).

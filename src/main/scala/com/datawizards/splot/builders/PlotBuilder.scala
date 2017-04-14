@@ -1,8 +1,11 @@
 package com.datawizards.splot.builders
 
+import scala.collection.JavaConversions._
 import com.datawizards.splot.configuration.SPlotConfiguration
+import com.datawizards.splot.mapper.SPlotToXChartMapper
 import com.datawizards.splot.model.PlotType.PlotType
-import com.datawizards.splot.model.{Plot, PlotType, PlotsGrid}
+import com.datawizards.splot.model._
+import org.knowm.xchart.{BitmapEncoder, BitmapEncoderExtension, VectorGraphicsEncoder, VectorGraphicsEncoderExtension}
 
 object PlotBuilder {
   val DefaultSingleGroup = ""
@@ -146,6 +149,17 @@ class PlotBuilder[T](data: Iterable[T]) {
     else device.plot(buildPlot())
   }
 
+  /**
+    * Save plot to file
+    *
+    * @param path file path
+    * @param imageFormat image format
+    */
+  def save(path: String, imageFormat: ImageFormat): Unit = {
+    if(gridPlot) savePlotsGrid(buildPlotsGrid(), path, imageFormat)
+    else savePlot(buildPlot(), path, imageFormat)
+  }
+
   private def buildPlot(): Plot = {
     new Plot(
       plotType = plotType,
@@ -175,5 +189,23 @@ class PlotBuilder[T](data: Iterable[T]) {
   private def mapXY(x: T => Double, y: T => Double): Unit = {
     yValues = data.map(y)
     xValues = data.map(x)
+  }
+
+  private def savePlot(plot: Plot, path: String, imageFormat: ImageFormat): Unit = {
+    val chart = SPlotToXChartMapper.mapPlotToXChart(plot)
+
+    imageFormat match {
+      case bif: BitmapImageFormat => BitmapEncoder.saveBitmap(chart, path, bif.bitmapFormat)
+      case vif: VectorGraphicsImageFormat => VectorGraphicsEncoder.saveVectorGraphic(chart, path, vif.vectorGraphicsFormat)
+    }
+  }
+
+  private def savePlotsGrid(plotsGrid: PlotsGrid, path: String, imageFormat: ImageFormat): Unit = {
+    val charts = SPlotToXChartMapper.mapPlotsGridToXChart(plotsGrid)
+
+    imageFormat match {
+      case bif: BitmapImageFormat => BitmapEncoderExtension.saveBitmap(charts, plotsGrid.rows, plotsGrid.cols, path, bif.bitmapFormat)
+      case vif: VectorGraphicsImageFormat => VectorGraphicsEncoderExtension.saveVectorGraphic(charts, plotsGrid.rows, plotsGrid.cols, path, vif.vectorGraphicsFormat)
+    }
   }
 }
