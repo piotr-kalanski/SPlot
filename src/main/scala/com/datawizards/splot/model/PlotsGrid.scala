@@ -5,27 +5,36 @@ import com.datawizards.splot.model.PlotType.PlotType
 import scala.collection.mutable.ListBuffer
 
 object PlotsGrid {
+
   def apply[T] (
    data: Iterable[T],
    plotType: PlotType,
    xValues: Iterable[Double],
    yValues: Iterable[Double],
    colsGroupFunction: T => Any,
-   rowsGroupFunction: T => Any
+   rowsGroupFunction: T => Any,
+   totalWidth: Int,
+   totalHeight: Int
   ): PlotsGrid = {
-    val plotsMap = (data zip (xValues zip yValues))
+    val dataGrouped = (data zip (xValues zip yValues))
       .map{case (point,(x,y)) => ((rowsGroupFunction(point), colsGroupFunction(point)), (x,y)) }
       .groupBy{case (group,(x,y)) => group}
-      .map{case (group, values) =>
+
+    val rowsCount = dataGrouped.keys.map(_._1).toSeq.distinct.size
+    val colsCount = dataGrouped.keys.map(_._2).toSeq.distinct.size
+
+    val plotsMap = dataGrouped.map{case (group, values) =>
         val (xValues, yValues) = values.map{case (_, (x,y)) => (x,y)}.unzip
+        val rowStr = group._1.toString
+        val colStr = group._2.toString
 
         group -> new Plot(
           plotType = plotType,
-          width = 400, //TODO
-          height = 300,//TODO
-          title = group._2.toString,
+          width = totalWidth / colsCount,
+          height = totalHeight / rowsCount,
+          title = if(rowStr == "") colStr else if(colStr == "") rowStr else rowStr + " | " + colStr,
           xTitle = "",
-          yTitle = group._1.toString,
+          yTitle = "",
           xValues = xValues,
           yValues = yValues
         )
@@ -33,6 +42,7 @@ object PlotsGrid {
 
     new PlotsGrid(plotsMap, plotType)
   }
+
 }
 
 class PlotsGrid(plotsMap: Map[(Any, Any), Plot], val plotType: PlotType) {

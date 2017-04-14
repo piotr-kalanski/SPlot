@@ -3,13 +3,12 @@ package com.datawizards.splot.examples.scatter
 import com.datawizards.splot.api.implicits._
 import com.datawizards.splot.examples._
 
-object ScatterChartsGrid extends App {
+object ScatterChartsGridColumns extends App {
 
   people
     .buildPlot()
     .scatter(_.age, _.income)
-    .size(1600, 1200)
     .colsBy(_.country)
-    .rowsBy(_.education)
+    .size(1200, 300)
     .display()
 }

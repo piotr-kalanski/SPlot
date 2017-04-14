@@ -23,4 +23,9 @@ trait SPlotBaseTest extends FunSuite with BeforeAndAfterAll {
     * @return Last plotted plot by SPlot
     */
   def getLastPlot: Plot = lastPlot
+
+  /**
+    * @return Last plotted plots grid by SPlot
+    */
+  def getLastPlotsGrid: PlotsGrid = lastPlotsGrid
 }

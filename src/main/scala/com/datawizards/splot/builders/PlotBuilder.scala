@@ -1,11 +1,16 @@
 package com.datawizards.splot.builders
 
 import com.datawizards.splot.configuration.SPlotConfiguration
+import com.datawizards.splot.model.PlotType.PlotType
 import com.datawizards.splot.model.{Plot, PlotType, PlotsGrid}
+
+object PlotBuilder {
+  val DefaultSingleGroup = ""
+}
 
 class PlotBuilder[T](data: Iterable[T]) {
 
-  private var plotType = PlotType.Bar
+  private var plotType: PlotType = _
   private var width = SPlotConfiguration.DefaultWidth
   private var height = SPlotConfiguration.DefaultHeight
   private var title: String = ""
@@ -14,8 +19,8 @@ class PlotBuilder[T](data: Iterable[T]) {
   private var xValues = Iterable[Double]()
   private var yValues = Iterable[Double]()
   private var gridPlot = false
-  private var colsGroupFunction: T => Any = _
-  private var rowsGroupFunction: T => Any = _
+  private var colsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
+  private var rowsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
 
   /**
     * Select bar chart
@@ -78,12 +83,53 @@ class PlotBuilder[T](data: Iterable[T]) {
     this
   }
 
+  /**
+    * Change chart width
+    *
+    * @param width new chart width
+    */
+  def width(width: Int): this.type = {
+    this.width = width
+    this
+  }
+
+  /**
+    * Change chart height
+    *
+    * @param height new chart height
+    */
+  def height(height: Int): this.type = {
+    this.height = height
+    this
+  }
+
+  /**
+    * Change chart size - width and height
+    *
+    * @param height new chart width, height
+    */
+  def size(width: Int, height: Int): this.type = {
+    this.width = width
+    this.height = height
+    this
+  }
+
+  /**
+    * Set function that will group input collection and for each group display dedicated chart in column
+    *
+    * @param cols data grouping function
+    */
   def colsBy(cols: T => Any): this.type = {
     gridPlot = true
     this.colsGroupFunction = cols
     this
   }
 
+  /**
+    * Set function that will group input collection and for each group display dedicated chart in row
+    *
+    * @param rows data grouping function
+    */
   def rowsBy(rows: T => Any): this.type = {
     gridPlot = true
     this.rowsGroupFunction = rows
@@ -91,9 +137,10 @@ class PlotBuilder[T](data: Iterable[T]) {
   }
 
   /**
-    * Display chart using all selected configuration values
+    * Display plot using all selected configuration values
     */
   def display(): Unit = {
+    require(plotType != null, "Plot type not selected")
     val device = SPlotConfiguration.deviceType
     if(gridPlot) device.plot(buildPlotsGrid())
     else device.plot(buildPlot())
@@ -119,7 +166,9 @@ class PlotBuilder[T](data: Iterable[T]) {
       xValues = xValues,
       yValues = yValues,
       colsGroupFunction = colsGroupFunction,
-      rowsGroupFunction = rowsGroupFunction
+      rowsGroupFunction = rowsGroupFunction,
+      totalWidth = width,
+      totalHeight = height
     )
   }
 

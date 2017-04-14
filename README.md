@@ -148,6 +148,17 @@ data
     .display()
 ```
 
+## Change chart size (width, height)
+
+```scala
+
+data
+    .buildPlot()
+    .bar(identity)
+    .size(1600, 1200)
+    .display()
+```
+
 # Contact
 
 piotr.kalanski@gmail.com
