@@ -39,6 +39,16 @@ package object implicits {
       * @param y function mapping element of collection to y values
       */
     def plotLine(x: T => Double, y: T => Double): Unit = plotBuilder.line(x, y).display()
+
+    /**
+      * Plot histogram chart
+      *
+      * @param values function mapping element of collection to values
+      * @param bins number of bins for histogram
+      */
+    def plotHistogram(values: T => Double, bins: Int=PlotBuilder.DefaultHistogramBins): Unit =
+      plotBuilder.histogram(values, bins).display()
+
   }
 
   class IterableDoublePlot(iterable: Iterable[Double]) {
@@ -53,6 +63,14 @@ package object implicits {
       * Plot bar chart
       */
     def plotBar(): Unit = plotBuilder.bar(x => x).display()
+
+    /**
+      * Plot histogram chart
+      *
+      * @param bins number of bins for histogram
+      */
+    def plotHistogram(bins: Int=PlotBuilder.DefaultHistogramBins): Unit =
+      plotBuilder.histogram(x => x, bins).display()
   }
 
   class IterablePairDoublePlot(iterable: Iterable[(Double, Double)]) {

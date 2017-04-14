@@ -3,11 +3,16 @@ package com.datawizards.splot.examples
 import com.datawizards.splot.api.implicits._
 import com.datawizards.splot.model.ImageFormats
 
+import scala.util.Random
+
 object SaveExampleImagesToFiles extends App {
   val exportPath = "images/"
   val format = ImageFormats.PNG
   val width = 400
   val height = 300
+  val rand = new Random()
+  rand.setSeed(0L)
+  val gaussians = for(i <- 1 to 10000) yield rand.nextGaussian()
 
   Seq(1.0, 4.0, 9.0).buildPlot().bar(x => x).size(width, height).save(exportPath+"basic_bar.png", format)
 
@@ -66,4 +71,10 @@ object SaveExampleImagesToFiles extends App {
     .colsBy(_.country)
     .rowsBy(_.education)
     .save(exportPath+"people_groupby_country_education.png", format)
+
+  gaussians
+    .buildPlot()
+    .histogram(x=>x, 100)
+    .size(400, 300)
+    .save(exportPath+"histogram_for_gaussians.png", format)
 }

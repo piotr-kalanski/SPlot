@@ -4,7 +4,7 @@ import scala.util.Random
 
 package object examples {
   private val rand = new Random()
-
+  rand.setSeed(0L)
   case class AgeIncome(age: Int, income: Double)
   case class Person(name: String, age: Int, country: String, education: String, income: Double)
 
