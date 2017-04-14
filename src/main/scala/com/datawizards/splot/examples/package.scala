@@ -18,7 +18,7 @@ package object examples {
     AgeIncome(50, 2500.0)
   )
 
-  val people: Iterable[Person] = for(i <- 1 to 1000) yield randomPerson
+  val people: Iterable[Person] = for(i <- 1 to 100) yield randomPerson
 
   private def randomPerson: Person = {
     Person(

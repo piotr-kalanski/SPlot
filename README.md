@@ -23,13 +23,16 @@ import com.datawizards.splot.api.implicits._
 Seq(1.0, 4.0, 9.0).plotBar()
 ```
 
+![](images/basic_bar.png)
+
 # Supported charts
 
 - Bar
 - Scatter
 - Line
 
-Please note that all below examples **require** importing:
+> Please note that all below examples **require** importing:
+
 ```scala
 import com.datawizards.splot.api.implicits._
 ```
@@ -57,6 +60,8 @@ val data = Seq(
 data.plotBar(_.age)
 ```
 
+![](images/bar_people.png)
+
 ## Scatter
 
 ### Scatter chart for sequence of numbers
@@ -70,6 +75,8 @@ val data = Seq(
 
 data.plotScatter()
 ```
+
+![](images/scatter_basic.png)
 
 ### Scatter chart for sequence of case class
 
@@ -89,6 +96,8 @@ val data = Seq(
 data.plotScatter(_.age, _.income)
 ```
 
+![](images/scatter_age_income.png)
+
 ## Line
 
 ### Line chart for sequence of numbers
@@ -102,6 +111,8 @@ val data = Seq(
 
 data.plotLine()
 ```
+
+![](images/line_basic.png)
 
 ### Line chart for sequence of case class
 
@@ -121,7 +132,33 @@ val data = Seq(
 data.plotLine(_.age, _.income)
 ```
 
+![](images/line_age_income.png)
+
 # Multi charts
+
+## Grouping by cols
+
+```scala
+people
+    .buildPlot()
+    .scatter(_.age, _.income)
+    .colsBy(_.country)
+    .display()
+```
+
+![](images/people_groupby_country.png)
+
+## Grouping by rows
+
+```scala
+people
+    .buildPlot()
+    .scatter(_.age, _.income)
+    .rowsBy(_.education)
+    .display()
+```
+
+![](images/people_groupby_education.png)
 
 ## Grouping by cols and/or rows
 
@@ -133,6 +170,31 @@ people
     .rowsBy(_.education)
     .display()
 ```
+
+![](images/people_groupby_country_education.png)
+
+# Saving plot to file
+
+To save plot to file you need to call method *save()* instead of calling *display()*.
+
+```scala
+import com.datawizards.splot.model.ImageFormats
+
+Seq(1.0, 4.0, 9.0)
+    .buildPlot()
+    .bar(x => x)
+    .save("chart.png", ImageFormats.PNG)
+```
+
+Currently supported image formats:
+
+- BMP
+- PNG
+- JPG
+- GIF
+- EPS
+- PDF
+- SVG
 
 # Customizations
 
