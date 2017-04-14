@@ -1,8 +1,12 @@
 package com.datawizards.splot
 
+import scala.util.Random
+
 package object examples {
+  private val rand = new Random()
+
   case class AgeIncome(age: Int, income: Double)
-  case class Person(name: String, age: Int)
+  case class Person(name: String, age: Int, country: String, education: String, income: Double)
 
   val ageIncome = Seq(
     AgeIncome(20, 1000.0),
@@ -14,9 +18,19 @@ package object examples {
     AgeIncome(50, 2500.0)
   )
 
-  val people = Seq(
-    Person("p1", 20),
-    Person("p2", 30),
-    Person("p3", 40)
-  )
+  val people: Iterable[Person] = for(i <- 1 to 1000) yield randomPerson
+
+  private def randomPerson: Person = {
+    Person(
+      name = "p_" + rand.nextInt(1000),
+      age = rand.nextInt(100),
+      country = randSelect("PL", "UK", "DE", "USA"),
+      education = randSelect("MSc", "BSc", "PhD"),
+      income = rand.nextInt(100000)
+    )
+  }
+
+  private def randSelect[T](values: T*): T = {
+    values(rand.nextInt(values.size).abs)
+  }
 }
