@@ -5,7 +5,7 @@ import com.datawizards.splot.model.{Plot, PlotType, PlotsGrid}
 import com.datawizards.splot.theme.PlotThemes
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle
 import org.knowm.xchart.internal.Series
-import org.knowm.xchart.{CategoryChart, CategoryChartBuilder, XYChart, XYChartBuilder}
+import org.knowm.xchart._
 import org.knowm.xchart.internal.chartpart.Chart
 import org.knowm.xchart.style.Styler
 import org.knowm.xchart.style.Styler.ChartTheme
@@ -17,6 +17,7 @@ object SPlotToXChartMapper {
       case PlotType.Bar => mapCategoryChart(plot)
       case PlotType.Scatter => mapScatterChart(plot)
       case PlotType.Line => mapLineChart(plot)
+      case PlotType.Histogram => mapCategoryChart(plot)
       case _ => throw new Exception("Unknown plot type")
     }
   }
@@ -26,6 +27,7 @@ object SPlotToXChartMapper {
       case PlotType.Bar => mapCategoryChartsGrid(plotsGrid)
       case PlotType.Scatter => mapScatterChartsGrid(plotsGrid)
       case PlotType.Line => mapLineChartsGrid(plotsGrid)
+      case PlotType.Histogram => mapCategoryChartsGrid(plotsGrid)
       case _ => throw new Exception("Unknown plot type")
     }
   }

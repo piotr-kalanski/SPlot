@@ -5,10 +5,11 @@ import com.datawizards.splot.configuration.SPlotConfiguration
 import com.datawizards.splot.mapper.SPlotToXChartMapper
 import com.datawizards.splot.model.PlotType.PlotType
 import com.datawizards.splot.model._
-import org.knowm.xchart.{BitmapEncoder, BitmapEncoderExtension, VectorGraphicsEncoder, VectorGraphicsEncoderExtension}
+import org.knowm.xchart._
 
 object PlotBuilder {
   val DefaultSingleGroup = ""
+  val DefaultHistogramBins = 20
 }
 
 class PlotBuilder[T](data: Iterable[T]) {
@@ -58,6 +59,21 @@ class PlotBuilder[T](data: Iterable[T]) {
   def line(x: T => Double, y: T => Double): this.type = {
     plotType = PlotType.Line
     mapXY(x, y)
+    this
+  }
+
+  /**
+    * Select histogram chart
+    *
+    * @param values function mapping element of collection to values
+    * @param bins number of bins for histogram
+    */
+  def histogram(values: T => Double, bins: Int = PlotBuilder.DefaultHistogramBins): this.type = {
+    plotType = PlotType.Histogram
+    val rawValues = data.map(values).map(v => new java.lang.Double(v))
+    val histogram = new Histogram(rawValues, bins)
+    xValues = histogram.getxAxisData().toIterable.map(d => d.toDouble)
+    yValues = histogram.getyAxisData().toIterable.map(d => d.toDouble)
     this
   }
 

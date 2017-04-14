@@ -30,6 +30,7 @@ Seq(1.0, 4.0, 9.0).plotBar()
 - Bar
 - Scatter
 - Line
+- Histogram
 
 > Please note that all below examples **require** importing:
 
@@ -133,6 +134,18 @@ data.plotLine(_.age, _.income)
 ```
 
 ![](images/line_age_income.png)
+
+## Histogram
+
+### Histogram for sequence of numbers
+
+```scala
+val rand = new Random()
+val gaussians = for(i <- 1 to 10000) yield rand.nextGaussian()
+gaussians.plotHistogram(100)
+```
+
+![](images/histogram_for_gaussians.png)
 
 # Multi charts
 
