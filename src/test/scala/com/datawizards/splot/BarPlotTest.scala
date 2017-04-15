@@ -33,7 +33,7 @@ class BarPlotTest extends SPlotBaseTest {
 
     data
       .buildPlot()
-      .bar(identity)
+      .bar()
       .titles("main title", "x title", "y title")
       .display()
 

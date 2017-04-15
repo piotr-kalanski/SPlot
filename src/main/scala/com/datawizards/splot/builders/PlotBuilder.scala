@@ -10,6 +10,8 @@ import org.knowm.xchart._
 object PlotBuilder {
   val DefaultSingleGroup = ""
   val DefaultHistogramBins = 20
+
+  def apply[T](data: Iterable[T]): PlotBuilder[T] = new PlotBuilder[T](data)
 }
 
 class PlotBuilder[T](data: Iterable[T]) {
@@ -224,4 +226,53 @@ class PlotBuilder[T](data: Iterable[T]) {
       case vif: VectorGraphicsImageFormat => VectorGraphicsEncoderExtension.saveVectorGraphic(charts, plotsGrid.rows, plotsGrid.cols, path, vif.vectorGraphicsFormat)
     }
   }
+}
+
+class PlotBuilderForDouble(data: Iterable[Double]) extends PlotBuilder[Double](data) {
+
+  /**
+    * Select bar chart
+    */
+  def bar(): this.type = {
+    bar(x => x)
+    this
+  }
+
+  /**
+    * Select histogram
+    *
+    */
+  def histogram(): this.type = {
+    histogram(x => x)
+  }
+
+  /**
+    * Select histogram
+    *
+    * @param bins number of bins
+    */
+  def histogram(bins: Int): this.type = {
+    histogram(x => x, bins)
+  }
+
+}
+
+class PlotBuilderForPairOfDouble(data: Iterable[(Double, Double)]) extends PlotBuilder[(Double, Double)](data) {
+
+  /**
+    * Select scatter chart
+    */
+  def scatter(): this.type = {
+    scatter(_._1, _._2)
+    this
+  }
+
+  /**
+    * Select line chart
+    */
+  def line(): this.type = {
+    line(_._1, _._2)
+    this
+  }
+
 }

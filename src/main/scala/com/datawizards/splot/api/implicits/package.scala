@@ -1,6 +1,6 @@
 package com.datawizards.splot.api
 
-import com.datawizards.splot.builders.PlotBuilder
+import com.datawizards.splot.builders.{PlotBuilder, PlotBuilderForDouble, PlotBuilderForPairOfDouble}
 
 package object implicits {
   implicit def Iterable2IterablePlot[T](x: Iterable[T]): IterablePlot[T] = new IterablePlot(x)
@@ -52,17 +52,17 @@ package object implicits {
   }
 
   class IterableDoublePlot(iterable: Iterable[Double]) {
-    private val plotBuilder = new PlotBuilder[Double](iterable)
+    private val plotBuilder = new PlotBuilderForDouble(iterable)
 
     /**
       * Start building new plot with custom settings
       */
-    def buildPlot(): PlotBuilder[Double] = plotBuilder
+    def buildPlot(): PlotBuilderForDouble = plotBuilder
 
     /**
       * Plot bar chart
       */
-    def plotBar(): Unit = plotBuilder.bar(x => x).display()
+    def plotBar(): Unit = plotBuilder.bar().display()
 
     /**
       * Plot histogram chart
@@ -74,21 +74,21 @@ package object implicits {
   }
 
   class IterablePairDoublePlot(iterable: Iterable[(Double, Double)]) {
-    private val plotBuilder = new PlotBuilder[(Double, Double)](iterable)
+    private val plotBuilder = new PlotBuilderForPairOfDouble(iterable)
 
     /**
       * Start building new plot with custom settings
       */
-    def buildPlot(): PlotBuilder[(Double, Double)] = plotBuilder
+    def buildPlot(): PlotBuilderForPairOfDouble = plotBuilder
 
     /**
       * Plot scatter chart
       */
-    def plotScatter(): Unit = plotBuilder.scatter(_._1, _._2).display()
+    def plotScatter(): Unit = plotBuilder.scatter().display()
 
     /**
       * Plot line chart
       */
-    def plotLine(): Unit = plotBuilder.line(_._1, _._2).display()
+    def plotLine(): Unit = plotBuilder.line().display()
   }
 }

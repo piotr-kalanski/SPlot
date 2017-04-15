@@ -195,7 +195,7 @@ import com.datawizards.splot.model.ImageFormats
 
 Seq(1.0, 4.0, 9.0)
     .buildPlot()
-    .bar(x => x)
+    .bar()
     .save("chart.png", ImageFormats.PNG)
 ```
 
@@ -218,7 +218,7 @@ val data = Seq(1.0, 4.0, 9.0)
 
 data
     .buildPlot()
-    .bar(identity)
+    .bar()
     .titles("Example bar chart", "x values", "y values")
     .display()
 ```
@@ -226,10 +226,11 @@ data
 ## Change chart size (width, height)
 
 ```scala
+val data = Seq(1.0, 4.0, 9.0)
 
 data
     .buildPlot()
-    .bar(identity)
+    .bar()
     .size(1600, 1200)
     .display()
 ```
