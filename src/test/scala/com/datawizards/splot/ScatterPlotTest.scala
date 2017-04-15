@@ -2,9 +2,8 @@ package com.datawizards.splot
 
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-
 import com.datawizards.splot.api.implicits._
-import com.datawizards.splot.model.PlotType
+import com.datawizards.splot.model.{PlotAxisValues, PlotType}
 
 @RunWith(classOf[JUnitRunner])
 class ScatterPlotTest extends SPlotBaseTest {
@@ -21,11 +20,11 @@ class ScatterPlotTest extends SPlotBaseTest {
       plot.plotType
     }
 
-    assertResult(xs, "x values") {
+    assertResult(PlotAxisValues.createXAxisValuesDouble(xs), "x values") {
       plot.xValues
     }
 
-    assertResult(ys, "y values") {
+    assertResult(PlotAxisValues.createYAxisValuesDouble(ys), "y values") {
       plot.yValues
     }
   }

@@ -1,8 +1,10 @@
 package com.datawizards.splot.api
 
 import com.datawizards.splot.builders.{PlotBuilder, PlotBuilderForDouble, PlotBuilderForPairOfDouble}
+import com.datawizards.splot.model.PlotAxisValues.{XAxisValueType, YAxisValueType}
 
 package object implicits {
+
   implicit def Iterable2IterablePlot[T](x: Iterable[T]): IterablePlot[T] = new IterablePlot(x)
 
   implicit def IterableDouble2IterableDoublePlot(x: Iterable[Double]): IterableDoublePlot = new IterableDoublePlot(x)
@@ -22,7 +24,15 @@ package object implicits {
       *
       * @param values function mapping element of collection to values
       */
-    def plotBar(values: T => Double): Unit = plotBuilder.bar(values).display()
+    def plotBar(values: T => YAxisValueType): Unit = plotBuilder.bar(values).display()
+
+    /**
+      * Plot bar chart
+      *
+      * @param x function mapping element of collection to x values
+      * @param y function mapping element of collection to y values
+      */
+    def plotBar(x: T => XAxisValueType, y: T => YAxisValueType): Unit = plotBuilder.bar(x, y).display()
 
     /**
       * Plot scatter chart
@@ -30,7 +40,7 @@ package object implicits {
       * @param x function mapping element of collection to x values
       * @param y function mapping element of collection to y values
       */
-    def plotScatter(x: T => Double, y: T => Double): Unit = plotBuilder.scatter(x, y).display()
+    def plotScatter(x: T => XAxisValueType, y: T => YAxisValueType): Unit = plotBuilder.scatter(x, y).display()
 
     /**
       * Plot line chart
@@ -38,7 +48,7 @@ package object implicits {
       * @param x function mapping element of collection to x values
       * @param y function mapping element of collection to y values
       */
-    def plotLine(x: T => Double, y: T => Double): Unit = plotBuilder.line(x, y).display()
+    def plotLine(x: T => XAxisValueType, y: T => YAxisValueType): Unit = plotBuilder.line(x, y).display()
 
     /**
       * Plot histogram chart

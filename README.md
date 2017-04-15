@@ -63,6 +63,32 @@ data.plotBar(_.age)
 
 ![](images/bar_people.png)
 
+### Bar chart for categorical data
+
+```scala
+val populationByCountry = Seq(
+    ("DE", 81),
+    ("TR", 72),
+    ("FR", 63),
+    ("UK", 62),
+    ("IT", 61),
+    ("ES", 46),
+    ("UA", 45),
+    ("PL", 38),
+    ("RO", 19),
+    ("NL", 17),
+    ("GR", 11),
+    ("PT", 11),
+    ("BE", 10),
+    ("CZ", 10),
+    ("HU", 10)
+  )
+
+  populationByCountry.plotBar(_._1, _._2)
+```
+
+![](images/bar_chart_with_string.png)
+
 ## Scatter
 
 ### Scatter chart for sequence of numbers
@@ -175,6 +201,8 @@ people
 
 ## Grouping by cols and/or rows
 
+### Scatter plot
+
 ```scala
 people
     .buildPlot()
@@ -185,6 +213,23 @@ people
 ```
 
 ![](images/people_groupby_country_education.png)
+
+### Bar plot
+
+```scala
+val groupedPeopleByCountryEducation = people
+    .groupBy(p => (p.country, p.education))
+    .mapValues(pv => pv.size)
+
+groupedPeopleByCountryEducation
+    .buildPlot()
+    .colsBy(_._1._1)
+    .bar(x => x._1._2, x => x._2)
+    .size(1200, 300)
+    .display()
+```
+
+![](images/bar_chart_grids_with_string.png)
 
 # Saving plot to file
 

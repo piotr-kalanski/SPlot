@@ -6,6 +6,7 @@ import com.datawizards.splot.model.ImageFormats
 import scala.util.Random
 
 object SaveExampleImagesToFiles extends App {
+
   val exportPath = "images/"
   val format = ImageFormats.PNG
   val width = 400
@@ -77,4 +78,40 @@ object SaveExampleImagesToFiles extends App {
     .histogram(100)
     .size(400, 300)
     .save(exportPath+"histogram_for_gaussians.png", format)
+
+  val populationByCountry = Seq(
+    ("DE", 81),
+    ("TR", 72),
+    ("FR", 63),
+    ("UK", 62),
+    ("IT", 61),
+    ("ES", 46),
+    ("UA", 45),
+    ("PL", 38),
+    ("RO", 19),
+    ("NL", 17),
+    ("GR", 11),
+    ("PT", 11),
+    ("BE", 10),
+    ("CZ", 10),
+    ("HU", 10)
+  )
+
+  populationByCountry
+    .buildPlot()
+    .bar(_._1, _._2)
+    .title("Population by country [millions]")
+    .size(1200, 300)
+    .save(exportPath+"bar_chart_with_string.png", format)
+
+  val groupedPeopleByCountryEducation = people
+    .groupBy(p => (p.country, p.education))
+    .mapValues(pv => pv.size)
+
+  groupedPeopleByCountryEducation
+    .buildPlot()
+    .colsBy(_._1._1)
+    .bar(x => x._1._2, x => x._2)
+    .size(1200, 300)
+    .save(exportPath+"bar_chart_grids_with_string.png", format)
 }
