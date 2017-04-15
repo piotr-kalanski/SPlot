@@ -46,7 +46,7 @@ object PlotsGrid {
 
 }
 
-class PlotsGrid(plotsMap: Map[(Any, Any), Plot], val plotType: PlotType) {
+class PlotsGrid(val plotsMap: Map[(Any, Any), Plot], val plotType: PlotType) {
 
   def apply(row: Any, col: Any): Plot = {
     plotsMap((row, col))
@@ -68,4 +68,5 @@ class PlotsGrid(plotsMap: Map[(Any, Any), Plot], val plotType: PlotType) {
 
   lazy val cols: Int = plotsMap.keys.map(_._2).toSeq.distinct.size
 
+  override def toString: String = plotsMap.toString
 }

@@ -28,8 +28,6 @@ class PlotBuilder[T](data: Iterable[T]) {
   private var colsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
   private var rowsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
 
-  type DI = DummyImplicit
-
   /**
     * Select bar chart
     *
@@ -228,7 +226,7 @@ class PlotBuilder[T](data: Iterable[T]) {
     )
   }
 
-  private def mapXY(x: T => XAxisValueType, y: T => YAxisValueType)(implicit d1:DI): Unit = {
+  private def mapXY(x: T => XAxisValueType, y: T => YAxisValueType): Unit = {
     yValues = PlotAxisValues.createYAxisValues(data.map(y))
     xValues = PlotAxisValues.createXAxisValues(data.map(x))
   }
@@ -283,7 +281,40 @@ class PlotBuilderForDouble(data: Iterable[Double]) extends PlotBuilder[Double](d
 
 }
 
-class PlotBuilderForPairOfDouble(data: Iterable[(Double, Double)]) extends PlotBuilder[(Double, Double)](data) {
+class PlotBuilderForInt(data: Iterable[Int]) extends PlotBuilder[Int](data) {
+
+  /**
+    * Select bar chart
+    */
+  def bar(): this.type = bar(x => x)
+
+  /**
+    * Select histogram
+    *
+    */
+  def histogram(): this.type = {
+    histogram(x => x)
+  }
+
+  /**
+    * Select histogram
+    *
+    * @param bins number of bins
+    */
+  def histogram(bins: Int): this.type = {
+    histogram(x => x, bins)
+  }
+}
+
+class PlotBuilderForPairOfXYAxis(data: Iterable[(XAxisValueType, YAxisValueType)]) extends PlotBuilder[(XAxisValueType, YAxisValueType)](data) {
+
+  /**
+    * Select line chart
+    */
+  def bar(): this.type = {
+    bar(_._1, _._2)
+    this
+  }
 
   /**
     * Select scatter chart

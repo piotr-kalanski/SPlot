@@ -32,7 +32,7 @@ class BarPlotTest extends SPlotBaseTest {
     val ys = Seq(1, 2, 3)
     val data = xs zip ys
 
-    data.plotBar(_._1, _._2)
+    data.plotBar()
 
     val plot = getLastPlot
 

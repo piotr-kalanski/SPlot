@@ -7,6 +7,11 @@ SPlot is Scala library for data visualization.
 - Provide simple API in Scala for data visualization similar to ggplot (http://ggplot2.org/) and Seaborn (https://seaborn.pydata.org/)
 - Support exploratory data analysis
 
+Currently project is **NOT** focused on:
+
+- Performance
+- Rich possibilities for customization
+
 # Getting started
 
 Import implicits, which adds methods to Scala collection enabling plotting:
@@ -84,7 +89,7 @@ val populationByCountry = Seq(
     ("HU", 10)
   )
 
-  populationByCountry.plotBar(_._1, _._2)
+  populationByCountry.plotBar()
 ```
 
 ![](images/bar_chart_with_string.png)

@@ -7,11 +7,15 @@ object PlotAxisValues {
   trait XAxisValueType {
     def value: Any
 
+    override def hashCode: Int = value.hashCode
+
     override def equals(obj: scala.Any): Boolean = {
-      obj match {
-        case x:XAxisValueType => value.equals(x.value)
-        case _ => false
-      }
+      if(value.equals(obj)) true
+      else
+        obj match {
+          case x:XAxisValueType => value.equals(x.value)
+          case _ => false
+        }
     }
 
     override def toString: String = value.toString
@@ -24,6 +28,8 @@ object PlotAxisValues {
   class XAxisValues(val values: Iterable[XAxisValueType]) {
 
     override def toString: String = s"XAxis[${values.toString}]"
+
+    override def hashCode: Int = values.hashCode
 
     override def equals(obj: scala.Any): Boolean = {
       obj match {
@@ -54,11 +60,15 @@ object PlotAxisValues {
   trait YAxisValueType {
     def value: AnyVal
 
+    override def hashCode: Int = value.hashCode
+
     override def equals(obj: scala.Any): Boolean = {
-      obj match {
-        case x:YAxisValueType => value.equals(x.value)
-        case _ => false
-      }
+      if(value.equals(obj)) true
+      else
+        obj match {
+          case x:YAxisValueType => value.equals(x.value)
+          case _ => false
+        }
     }
 
     override def toString: String = value.toString
@@ -70,6 +80,8 @@ object PlotAxisValues {
   class YAxisValues(val values: Iterable[YAxisValueType]) {
 
     override def toString: String = s"YAxis[${values.toString}]"
+
+    override def hashCode: Int = values.hashCode
 
     override def equals(obj: scala.Any): Boolean = {
       obj match {

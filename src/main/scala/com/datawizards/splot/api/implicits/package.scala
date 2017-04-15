@@ -1,15 +1,36 @@
 package com.datawizards.splot.api
 
-import com.datawizards.splot.builders.{PlotBuilder, PlotBuilderForDouble, PlotBuilderForPairOfDouble}
-import com.datawizards.splot.model.PlotAxisValues.{XAxisValueType, YAxisValueType}
+import com.datawizards.splot.builders._
+import com.datawizards.splot.model.PlotAxisValues.{XAxisValueType, XAxisValueTypeDouble, XAxisValueTypeInt, XAxisValueTypeString, YAxisValueType, YAxisValueTypeDouble, YAxisValueTypeInt}
 
 package object implicits {
 
-  implicit def Iterable2IterablePlot[T](x: Iterable[T]): IterablePlot[T] = new IterablePlot(x)
+  implicit def convertIterable[T](x: Iterable[T]): IterablePlot[T] =
+    new IterablePlot(x)
 
-  implicit def IterableDouble2IterableDoublePlot(x: Iterable[Double]): IterableDoublePlot = new IterableDoublePlot(x)
+  implicit def convertIterableDouble(x: Iterable[Double]): IterableDoublePlot =
+    new IterableDoublePlot(x)
 
-  implicit def IterablePairDouble2IterablePairDoublePlot(x: Iterable[(Double,Double)]): IterablePairDoublePlot = new IterablePairDoublePlot(x)
+  implicit def convertIterableInt(x: Iterable[Int]): IterableIntPlot =
+    new IterableIntPlot(x)
+
+  implicit def convertIterablePairDoubleDouble(x: Iterable[(Double,Double)]): IterablePairDoubleDoublePlot =
+    new IterablePairDoubleDoublePlot(x)
+
+  implicit def convertIterablePairDoubleInt(x: Iterable[(Double,Int)]): IterablePairDoubleIntPlot =
+    new IterablePairDoubleIntPlot(x)
+
+  implicit def convertIterablePairIntDouble(x: Iterable[(Int,Double)]): IterablePairIntDoublePlot =
+    new IterablePairIntDoublePlot(x)
+
+  implicit def convertIterablePairIntInt(x: Iterable[(Int,Int)]): IterablePairIntIntPlot =
+    new IterablePairIntIntPlot(x)
+
+  implicit def convertIterablePairStringDouble(x: Iterable[(String,Double)]): IterablePairStringDoublePlot =
+    new IterablePairStringDoublePlot(x)
+
+  implicit def convertIterablePairStringInt(x: Iterable[(String,Int)]): IterablePairStringIntPlot =
+    new IterablePairStringIntPlot(x)
 
   class IterablePlot[T](iterable: Iterable[T]) {
     private val plotBuilder = new PlotBuilder[T](iterable)
@@ -83,13 +104,42 @@ package object implicits {
       plotBuilder.histogram(x => x, bins).display()
   }
 
-  class IterablePairDoublePlot(iterable: Iterable[(Double, Double)]) {
-    private val plotBuilder = new PlotBuilderForPairOfDouble(iterable)
+  class IterableIntPlot(iterable: Iterable[Int]) {
+    private val plotBuilder = new PlotBuilderForInt(iterable)
 
     /**
       * Start building new plot with custom settings
       */
-    def buildPlot(): PlotBuilderForPairOfDouble = plotBuilder
+    def buildPlot(): PlotBuilderForInt = plotBuilder
+
+    /**
+      * Plot bar chart
+      */
+    def plotBar(): Unit = plotBuilder.bar().display()
+
+    /**
+      * Plot histogram chart
+      *
+      * @param bins number of bins for histogram
+      */
+    def plotHistogram(bins: Int=PlotBuilder.DefaultHistogramBins): Unit =
+      plotBuilder.histogram(x => x, bins).display()
+  }
+
+  trait IterablePairOfXYAxis {
+    protected def iterablePairOfXYAxis: Iterable[(XAxisValueType, YAxisValueType)]
+
+    private val plotBuilder = new PlotBuilderForPairOfXYAxis(iterablePairOfXYAxis)
+
+    /**
+      * Start building new plot with custom settings
+      */
+    def buildPlot(): PlotBuilderForPairOfXYAxis = plotBuilder
+
+    /**
+      * Plot bar chart
+      */
+    def plotBar(): Unit = plotBuilder.bar().display()
 
     /**
       * Plot scatter chart
@@ -100,5 +150,35 @@ package object implicits {
       * Plot line chart
       */
     def plotLine(): Unit = plotBuilder.line().display()
+  }
+
+  class IterablePairDoubleDoublePlot(iterable: Iterable[(Double, Double)]) extends IterablePairOfXYAxis {
+    override def iterablePairOfXYAxis: Iterable[(XAxisValueType, YAxisValueType)] =
+      iterable.map(x => (new XAxisValueTypeDouble(x._1), new YAxisValueTypeDouble(x._2)))
+  }
+
+  class IterablePairDoubleIntPlot(iterable: Iterable[(Double, Int)]) extends IterablePairOfXYAxis {
+    override def iterablePairOfXYAxis: Iterable[(XAxisValueType, YAxisValueType)] =
+      iterable.map(x => (new XAxisValueTypeDouble(x._1), new YAxisValueTypeInt(x._2)))
+  }
+
+  class IterablePairIntDoublePlot(iterable: Iterable[(Int, Double)]) extends IterablePairOfXYAxis {
+    override def iterablePairOfXYAxis: Iterable[(XAxisValueType, YAxisValueType)] =
+      iterable.map(x => (new XAxisValueTypeInt(x._1), new YAxisValueTypeDouble(x._2)))
+  }
+
+  class IterablePairIntIntPlot(iterable: Iterable[(Int, Int)]) extends IterablePairOfXYAxis {
+    override def iterablePairOfXYAxis: Iterable[(XAxisValueType, YAxisValueType)] =
+      iterable.map(x => (new XAxisValueTypeInt(x._1), new YAxisValueTypeInt(x._2)))
+  }
+
+  class IterablePairStringDoublePlot(iterable: Iterable[(String, Double)]) extends IterablePairOfXYAxis {
+    override def iterablePairOfXYAxis: Iterable[(XAxisValueType, YAxisValueType)] =
+      iterable.map(x => (new XAxisValueTypeString(x._1), new YAxisValueTypeDouble(x._2)))
+  }
+
+  class IterablePairStringIntPlot(iterable: Iterable[(String, Int)]) extends IterablePairOfXYAxis {
+    override def iterablePairOfXYAxis: Iterable[(XAxisValueType, YAxisValueType)] =
+      iterable.map(x => (new XAxisValueTypeString(x._1), new YAxisValueTypeInt(x._2)))
   }
 }

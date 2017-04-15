@@ -21,5 +21,5 @@ object BarChartStringXValues extends App {
     ("HU", 10)
   )
 
-  populationByCountry.plotBar(_._1, _._2)
+  populationByCountry.plotBar()
 }

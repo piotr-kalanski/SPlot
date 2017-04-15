@@ -3,6 +3,7 @@ package com.datawizards.splot
 import com.datawizards.splot.api.implicits._
 import com.datawizards.splot.builders.PlotBuilder
 import com.datawizards.splot.model.PlotAxisValues
+import com.datawizards.splot.model.PlotAxisValues.{XAxisValueTypeDouble, YAxisValueTypeDouble}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
@@ -20,7 +21,7 @@ class PlotsGridTest extends SPlotBaseTest {
   test("group by cols") {
     data
       .buildPlot()
-      .scatter(_._1, _._2)
+      .scatter()
       .colsBy(_._1)
       .display()
 
@@ -34,8 +35,8 @@ class PlotsGridTest extends SPlotBaseTest {
       plotsGrid.cols
     }
 
-    assertResult(PlotAxisValues.createYAxisValues(Seq(1.0, 1.5))) {
-      plotsGrid(PlotBuilder.DefaultSingleGroup, 1.0).yValues
+    assertResult(PlotAxisValues.createYAxisValuesDouble(Seq(1.0, 1.5))) {
+      plotsGrid(PlotBuilder.DefaultSingleGroup, new XAxisValueTypeDouble(1.0)).yValues
     }
 
   }
@@ -43,7 +44,7 @@ class PlotsGridTest extends SPlotBaseTest {
   test("group by rows") {
     data
       .buildPlot()
-      .scatter(_._1, _._2)
+      .scatter()
       .rowsBy(_._1)
       .display()
 
@@ -57,15 +58,15 @@ class PlotsGridTest extends SPlotBaseTest {
       plotsGrid.cols
     }
 
-    assertResult(PlotAxisValues.createYAxisValues(Seq(1.0, 1.5))) {
-      plotsGrid(1.0, PlotBuilder.DefaultSingleGroup).yValues
+    assertResult(PlotAxisValues.createYAxisValuesDouble(Seq(1.0, 1.5))) {
+      plotsGrid(new XAxisValueTypeDouble(1.0), PlotBuilder.DefaultSingleGroup).yValues
     }
   }
 
   test("group by cols, rows") {
     data
       .buildPlot()
-      .scatter(_._1, _._2)
+      .scatter()
       .colsBy(_._1)
       .rowsBy(_._2)
       .display()
