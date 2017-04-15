@@ -27,6 +27,8 @@ class PlotBuilder[T](data: Iterable[T]) {
   private var gridPlot = false
   private var colsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
   private var rowsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
+  private var seriesName: String = "y"
+  private var legendVisible: Boolean = true
 
   /**
     * Select bar chart
@@ -180,6 +182,26 @@ class PlotBuilder[T](data: Iterable[T]) {
   }
 
   /**
+    * Change series name
+    *
+    * @param seriesName new series name
+    */
+  def seriesName(seriesName: String): this.type = {
+    this.seriesName = seriesName
+    this
+  }
+
+  /**
+    * Customise legend visibility
+    *
+    * @param visible legend visibility
+    */
+  def legendVisible(visible: Boolean): this.type = {
+    this.legendVisible = visible
+    this
+  }
+
+  /**
     * Display plot using all selected configuration values
     */
   def display(): Unit = {
@@ -209,7 +231,9 @@ class PlotBuilder[T](data: Iterable[T]) {
       xTitle = xTitle,
       yTitle = yTitle,
       xValues = xValues,
-      yValues = yValues
+      yValues = yValues,
+      seriesName = seriesName,
+      legendVisible = legendVisible
     )
   }
 
