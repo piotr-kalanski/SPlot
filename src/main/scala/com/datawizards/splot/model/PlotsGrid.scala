@@ -37,7 +37,9 @@ object PlotsGrid {
           xTitle = "",
           yTitle = "",
           xValues = PlotAxisValues.createXAxisValues(xValues),
-          yValues = PlotAxisValues.createYAxisValues(yValues)
+          yValues = PlotAxisValues.createYAxisValues(yValues),
+          seriesName = "values",
+          legendVisible = false
         )
       }
 

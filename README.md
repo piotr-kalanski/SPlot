@@ -58,9 +58,9 @@ data.plotBar()
 case class Person(name: String, age: Int)
 
 val data = Seq(
-    Person("p1", 20),
-    Person("p2", 30),
-    Person("p3", 40)
+    Person("p1", 45),
+    Person("p2", 85),
+    Person("p3", 78)
 )
 
 data.plotBar(_.age)
@@ -89,7 +89,13 @@ val populationByCountry = Seq(
     ("HU", 10)
   )
 
-  populationByCountry.plotBar()
+populationByCountry
+    .buildPlot()
+    .bar(_._1, _._2)
+    .titles("Population by country [millions]", "Country", "Population")
+    .size(1200, 300)
+    .legendVisible(false)
+    .display()
 ```
 
 ![](images/bar_chart_with_string.png)
@@ -284,6 +290,30 @@ data
     .size(1600, 1200)
     .display()
 ```
+
+## Change series name
+
+```scala
+Seq(1.0, 4.0, 9.0)
+    .buildPlot()
+    .bar()
+    .seriesName("custom name")
+    .display()
+```
+
+![](images/bar_chart_custom_series_name.png)
+
+## Hide legend
+
+```scala
+Seq(1.0, 4.0, 9.0)
+    .buildPlot()
+    .bar()
+    .legendVisible(false)
+    .display()
+```
+
+![](images/bar_chart_hide_legend.png)
 
 # Contact
 

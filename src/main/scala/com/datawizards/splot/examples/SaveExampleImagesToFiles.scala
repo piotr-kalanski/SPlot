@@ -17,7 +17,7 @@ object SaveExampleImagesToFiles extends App {
 
   Seq(1.0, 4.0, 9.0).buildPlot().bar().size(width, height).save(exportPath+"basic_bar.png", format)
 
-  people.take(5).buildPlot().bar(_.age).size(width, height).save(exportPath+"bar_people.png", format)
+  people.take(3).buildPlot().bar(_.age).size(width, height).save(exportPath+"bar_people.png", format)
 
   Seq(
     (1.0, 1.0),
@@ -100,8 +100,9 @@ object SaveExampleImagesToFiles extends App {
   populationByCountry
     .buildPlot()
     .bar(_._1, _._2)
-    .title("Population by country [millions]")
+    .titles("Population by country [millions]", "Country", "Population")
     .size(1200, 300)
+    .legendVisible(false)
     .save(exportPath+"bar_chart_with_string.png", format)
 
   val groupedPeopleByCountryEducation = people
@@ -114,4 +115,18 @@ object SaveExampleImagesToFiles extends App {
     .bar(x => x._1._2, x => x._2)
     .size(1200, 300)
     .save(exportPath+"bar_chart_grids_with_string.png", format)
+
+  Seq(1.0, 4.0, 9.0)
+    .buildPlot()
+    .bar()
+    .seriesName("custom name")
+    .size(400, 300)
+    .save(exportPath+"bar_chart_custom_series_name.png", format)
+
+  Seq(1.0, 4.0, 9.0)
+    .buildPlot()
+    .bar()
+    .legendVisible(false)
+    .size(400, 300)
+    .save(exportPath+"bar_chart_hide_legend.png", format)
 }
