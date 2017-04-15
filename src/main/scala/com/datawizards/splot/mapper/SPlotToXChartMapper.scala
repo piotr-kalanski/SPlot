@@ -1,6 +1,7 @@
 package com.datawizards.splot.mapper
 
 import com.datawizards.splot.configuration.SPlotConfiguration
+import com.datawizards.splot.model.PlotAxisValues._
 import com.datawizards.splot.model.{Plot, PlotType, PlotsGrid}
 import com.datawizards.splot.theme.PlotThemes
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle
@@ -9,6 +10,8 @@ import org.knowm.xchart._
 import org.knowm.xchart.internal.chartpart.Chart
 import org.knowm.xchart.style.Styler
 import org.knowm.xchart.style.Styler.ChartTheme
+
+import scala.collection.JavaConversions._
 
 object SPlotToXChartMapper {
 
@@ -61,7 +64,7 @@ object SPlotToXChartMapper {
       .build()
 
     //TODO - series name customization
-    chart.addSeries("x", plot.xValues.toArray, plot.yValues.toArray)
+    chart.addSeries("x", mapXAxisValues(plot.xValues), mapYAxisValues(plot.yValues))
 
     chart
   }
@@ -85,7 +88,7 @@ object SPlotToXChartMapper {
       .build()
 
     //TODO - series name customization
-    chart.addSeries("xy", plot.xValues.toArray, plot.yValues.toArray)
+    chart.addSeries("xy", mapXAxisValues(plot.xValues), mapYAxisValues(plot.yValues))
 
     chart
   }
@@ -93,5 +96,20 @@ object SPlotToXChartMapper {
   private def getChartTheme: ChartTheme = SPlotConfiguration.plotTheme match {
     case PlotThemes.ggPlotTheme => ChartTheme.GGPlot2
     case _ => throw new Exception("Unknown plot theme")
+  }
+
+  private def mapXAxisValues(plotAxisValues: XAxisValues): java.util.List[_] =
+    plotAxisValues.values.map(x => x.value).toList
+
+  private def mapYAxisValues(plotAxisValues: YAxisValues): java.util.List[_ <: Number] = {
+    plotAxisValues
+      .values
+      .map(_.value)
+      .map {
+        case i:Int => new java.lang.Integer(i)
+        case d:Double => new java.lang.Double(d)
+        case _ => throw new Exception("Not supported type.")
+      }
+      .toList
   }
 }

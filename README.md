@@ -7,6 +7,11 @@ SPlot is Scala library for data visualization.
 - Provide simple API in Scala for data visualization similar to ggplot (http://ggplot2.org/) and Seaborn (https://seaborn.pydata.org/)
 - Support exploratory data analysis
 
+Currently project is **NOT** focused on:
+
+- Performance
+- Rich possibilities for customization
+
 # Getting started
 
 Import implicits, which adds methods to Scala collection enabling plotting:
@@ -62,6 +67,32 @@ data.plotBar(_.age)
 ```
 
 ![](images/bar_people.png)
+
+### Bar chart for categorical data
+
+```scala
+val populationByCountry = Seq(
+    ("DE", 81),
+    ("TR", 72),
+    ("FR", 63),
+    ("UK", 62),
+    ("IT", 61),
+    ("ES", 46),
+    ("UA", 45),
+    ("PL", 38),
+    ("RO", 19),
+    ("NL", 17),
+    ("GR", 11),
+    ("PT", 11),
+    ("BE", 10),
+    ("CZ", 10),
+    ("HU", 10)
+  )
+
+  populationByCountry.plotBar()
+```
+
+![](images/bar_chart_with_string.png)
 
 ## Scatter
 
@@ -175,6 +206,8 @@ people
 
 ## Grouping by cols and/or rows
 
+### Scatter plot
+
 ```scala
 people
     .buildPlot()
@@ -186,6 +219,23 @@ people
 
 ![](images/people_groupby_country_education.png)
 
+### Bar plot
+
+```scala
+val groupedPeopleByCountryEducation = people
+    .groupBy(p => (p.country, p.education))
+    .mapValues(pv => pv.size)
+
+groupedPeopleByCountryEducation
+    .buildPlot()
+    .colsBy(_._1._1)
+    .bar(x => x._1._2, x => x._2)
+    .size(1200, 300)
+    .display()
+```
+
+![](images/bar_chart_grids_with_string.png)
+
 # Saving plot to file
 
 To save plot to file you need to call method *save()* instead of calling *display()*.
@@ -195,7 +245,7 @@ import com.datawizards.splot.model.ImageFormats
 
 Seq(1.0, 4.0, 9.0)
     .buildPlot()
-    .bar(x => x)
+    .bar()
     .save("chart.png", ImageFormats.PNG)
 ```
 
@@ -218,7 +268,7 @@ val data = Seq(1.0, 4.0, 9.0)
 
 data
     .buildPlot()
-    .bar(identity)
+    .bar()
     .titles("Example bar chart", "x values", "y values")
     .display()
 ```
@@ -226,10 +276,11 @@ data
 ## Change chart size (width, height)
 
 ```scala
+val data = Seq(1.0, 4.0, 9.0)
 
 data
     .buildPlot()
-    .bar(identity)
+    .bar()
     .size(1600, 1200)
     .display()
 ```

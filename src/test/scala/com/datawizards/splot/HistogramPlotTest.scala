@@ -1,7 +1,7 @@
 package com.datawizards.splot
 
 import com.datawizards.splot.api.implicits._
-import com.datawizards.splot.model.PlotType
+import com.datawizards.splot.model.{PlotAxisValues, PlotType}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
@@ -18,7 +18,7 @@ class HistogramPlotTest extends SPlotBaseTest {
       plot.plotType
     }
 
-    assertResult(Seq(1.0, 2.0, 3.0), "y values") {
+    assertResult(PlotAxisValues.createYAxisValues(Seq(1.0, 2.0, 3.0)), "y values") {
       plot.yValues
     }
   }

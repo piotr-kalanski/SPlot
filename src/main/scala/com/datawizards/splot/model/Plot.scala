@@ -1,5 +1,6 @@
 package com.datawizards.splot.model
 
+import com.datawizards.splot.model.PlotAxisValues.{XAxisValues, YAxisValues}
 import com.datawizards.splot.model.PlotType.PlotType
 
 class Plot (
@@ -9,8 +10,8 @@ class Plot (
   val title: String,
   val xTitle: String,
   val yTitle: String,
-  val xValues: Iterable[Double], //TODO - support also Int, String and Date
-  val yValues: Iterable[Double]
+  val xValues: XAxisValues,
+  val yValues: YAxisValues
 ) {
 
   override def toString: String = {

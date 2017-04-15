@@ -2,9 +2,8 @@ package com.datawizards.splot
 
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-
 import com.datawizards.splot.api.implicits._
-import com.datawizards.splot.model.PlotType
+import com.datawizards.splot.model.{PlotAxisValues, PlotType}
 
 @RunWith(classOf[JUnitRunner])
 class BarPlotTest extends SPlotBaseTest {
@@ -19,11 +18,33 @@ class BarPlotTest extends SPlotBaseTest {
       plot.plotType
     }
 
-    assertResult(Seq(1.0, 2.0, 3.0), "x values") {
+    assertResult(PlotAxisValues.createXAxisValuesInt(Seq(1, 2, 3)), "x values") {
       plot.xValues
     }
 
-    assertResult(data, "y values") {
+    assertResult(PlotAxisValues.createYAxisValuesDouble(data), "y values") {
+      plot.yValues
+    }
+  }
+
+  test("String x values") {
+    val xs = Seq("c1", "c2", "c3")
+    val ys = Seq(1, 2, 3)
+    val data = xs zip ys
+
+    data.plotBar()
+
+    val plot = getLastPlot
+
+    assertResult(PlotType.Bar) {
+      plot.plotType
+    }
+
+    assertResult(PlotAxisValues.createXAxisValuesString(xs), "x values") {
+      plot.xValues
+    }
+
+    assertResult(PlotAxisValues.createYAxisValuesInt(ys), "y values") {
       plot.yValues
     }
   }
@@ -33,7 +54,7 @@ class BarPlotTest extends SPlotBaseTest {
 
     data
       .buildPlot()
-      .bar(identity)
+      .bar()
       .titles("main title", "x title", "y title")
       .display()
 

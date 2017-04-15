@@ -7,7 +7,7 @@ object BarChartWithCustomTitle extends App {
 
   data
     .buildPlot()
-    .bar(identity)
+    .bar()
     .titles("Example bar chart", "x values", "y values")
     .display()
 }

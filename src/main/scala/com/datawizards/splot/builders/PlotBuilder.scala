@@ -3,6 +3,7 @@ package com.datawizards.splot.builders
 import scala.collection.JavaConversions._
 import com.datawizards.splot.configuration.SPlotConfiguration
 import com.datawizards.splot.mapper.SPlotToXChartMapper
+import com.datawizards.splot.model.PlotAxisValues.{XAxisValues, XAxisValueType, YAxisValueType, YAxisValues}
 import com.datawizards.splot.model.PlotType.PlotType
 import com.datawizards.splot.model._
 import org.knowm.xchart._
@@ -10,18 +11,19 @@ import org.knowm.xchart._
 object PlotBuilder {
   val DefaultSingleGroup = ""
   val DefaultHistogramBins = 20
+
+  def apply[T](data: Iterable[T]): PlotBuilder[T] = new PlotBuilder[T](data)
 }
 
 class PlotBuilder[T](data: Iterable[T]) {
-
   private var plotType: PlotType = _
   private var width = SPlotConfiguration.DefaultWidth
   private var height = SPlotConfiguration.DefaultHeight
   private var title: String = ""
   private var xTitle: String = "x"
   private var yTitle: String = "y"
-  private var xValues = Iterable[Double]()
-  private var yValues = Iterable[Double]()
+  private var xValues: XAxisValues = _
+  private var yValues: YAxisValues = _
   private var gridPlot = false
   private var colsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
   private var rowsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
@@ -31,10 +33,21 @@ class PlotBuilder[T](data: Iterable[T]) {
     *
     * @param values function mapping element of collection to values of bar chart
     */
-  def bar(values: T => Double): this.type = {
+  def bar(values: T => YAxisValueType): this.type = {
     plotType = PlotType.Bar
-    yValues = data.map(values)
-    xValues = data.zipWithIndex.map(1 + _._2.toDouble)
+    mapValues(values)
+    this
+  }
+
+  /**
+    * Select bar chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param y function mapping element of collection to y values
+    */
+  def bar(x: T => XAxisValueType, y: T => YAxisValueType): this.type = {
+    plotType = PlotType.Bar
+    mapXY(x, y)
     this
   }
 
@@ -44,9 +57,20 @@ class PlotBuilder[T](data: Iterable[T]) {
     * @param x function mapping element of collection to x values
     * @param y function mapping element of collection to y values
     */
-  def scatter(x: T => Double, y: T => Double): this.type = {
+  def scatter(x: T => XAxisValueType, y: T => YAxisValueType): this.type = {
     plotType = PlotType.Scatter
     mapXY(x, y)
+    this
+  }
+
+  /**
+    * Select line chart
+    *
+    * @param values function mapping element of collection to values of line chart
+    */
+  def line(values: T => YAxisValueType): this.type = {
+    plotType = PlotType.Line
+    mapValues(values)
     this
   }
 
@@ -56,7 +80,7 @@ class PlotBuilder[T](data: Iterable[T]) {
     * @param x function mapping element of collection to x values
     * @param y function mapping element of collection to y values
     */
-  def line(x: T => Double, y: T => Double): this.type = {
+  def line(x: T => XAxisValueType, y: T => YAxisValueType): this.type = {
     plotType = PlotType.Line
     mapXY(x, y)
     this
@@ -72,8 +96,8 @@ class PlotBuilder[T](data: Iterable[T]) {
     plotType = PlotType.Histogram
     val rawValues = data.map(values).map(v => new java.lang.Double(v))
     val histogram = new Histogram(rawValues, bins)
-    xValues = histogram.getxAxisData().toIterable.map(d => d.toDouble)
-    yValues = histogram.getyAxisData().toIterable.map(d => d.toDouble)
+    xValues = PlotAxisValues.createXAxisValuesDouble(histogram.getxAxisData().toIterable.map(d => d.toDouble))
+    yValues = PlotAxisValues.createYAxisValuesDouble(histogram.getyAxisData().toIterable.map(d => d.toDouble))
     this
   }
 
@@ -202,9 +226,14 @@ class PlotBuilder[T](data: Iterable[T]) {
     )
   }
 
-  private def mapXY(x: T => Double, y: T => Double): Unit = {
-    yValues = data.map(y)
-    xValues = data.map(x)
+  private def mapXY(x: T => XAxisValueType, y: T => YAxisValueType): Unit = {
+    yValues = PlotAxisValues.createYAxisValues(data.map(y))
+    xValues = PlotAxisValues.createXAxisValues(data.map(x))
+  }
+
+  private def mapValues(values: T => YAxisValueType): Unit = {
+    xValues = PlotAxisValues.createXAxisValuesInt(data.zipWithIndex.map(1 + _._2))
+    yValues = PlotAxisValues.createYAxisValues(data.map(values))
   }
 
   private def savePlot(plot: Plot, path: String, imageFormat: ImageFormat): Unit = {
@@ -224,4 +253,83 @@ class PlotBuilder[T](data: Iterable[T]) {
       case vif: VectorGraphicsImageFormat => VectorGraphicsEncoderExtension.saveVectorGraphic(charts, plotsGrid.rows, plotsGrid.cols, path, vif.vectorGraphicsFormat)
     }
   }
+}
+
+class PlotBuilderForDouble(data: Iterable[Double]) extends PlotBuilder[Double](data) {
+
+  /**
+    * Select bar chart
+    */
+  def bar(): this.type = bar(x => x)
+
+  /**
+    * Select histogram
+    *
+    */
+  def histogram(): this.type = {
+    histogram(x => x)
+  }
+
+  /**
+    * Select histogram
+    *
+    * @param bins number of bins
+    */
+  def histogram(bins: Int): this.type = {
+    histogram(x => x, bins)
+  }
+
+}
+
+class PlotBuilderForInt(data: Iterable[Int]) extends PlotBuilder[Int](data) {
+
+  /**
+    * Select bar chart
+    */
+  def bar(): this.type = bar(x => x)
+
+  /**
+    * Select histogram
+    *
+    */
+  def histogram(): this.type = {
+    histogram(x => x)
+  }
+
+  /**
+    * Select histogram
+    *
+    * @param bins number of bins
+    */
+  def histogram(bins: Int): this.type = {
+    histogram(x => x, bins)
+  }
+}
+
+class PlotBuilderForPairOfXYAxis(data: Iterable[(XAxisValueType, YAxisValueType)]) extends PlotBuilder[(XAxisValueType, YAxisValueType)](data) {
+
+  /**
+    * Select line chart
+    */
+  def bar(): this.type = {
+    bar(_._1, _._2)
+    this
+  }
+
+  /**
+    * Select scatter chart
+    */
+  def scatter(): this.type = {
+    scatter(_._1, _._2)
+    this
+  }
+
+  /**
+    * Select line chart
+    */
+  def line(): this.type = {
+    line(_._1, _._2)
+    this
+  }
+
 }
