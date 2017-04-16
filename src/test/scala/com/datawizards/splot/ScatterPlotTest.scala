@@ -21,11 +21,11 @@ class ScatterPlotTest extends SPlotBaseTest {
     }
 
     assertResult(PlotAxisValues.createXAxisValuesDouble(xs), "x values") {
-      plot.xValues
+      plot.series.head.xValues
     }
 
     assertResult(PlotAxisValues.createYAxisValuesDouble(ys), "y values") {
-      plot.yValues
+      plot.series.head.yValues
     }
   }
 }

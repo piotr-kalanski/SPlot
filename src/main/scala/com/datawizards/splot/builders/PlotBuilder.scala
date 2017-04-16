@@ -230,11 +230,11 @@ class PlotBuilder[T](data: Iterable[T]) {
       title = title,
       xTitle = xTitle,
       yTitle = yTitle,
-      series = new PlotSeries(
+      series = Seq(new PlotSeries(
         name = seriesName,
         xValues = xValues,
         yValues = yValues
-      ),
+      )),
       legendVisible = legendVisible
     )
   }

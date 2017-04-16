@@ -63,7 +63,9 @@ object SPlotToXChartMapper {
       .theme(getChartTheme)
       .build()
 
-    chart.addSeries(plot.seriesName, mapXAxisValues(plot.xValues), mapYAxisValues(plot.yValues))
+    for(series <- plot.series)
+      chart.addSeries(series.name, mapXAxisValues(series.xValues), mapYAxisValues(series.yValues))
+
     chart.getStyler.setLegendVisible(plot.legendVisible)
 
     chart
@@ -87,7 +89,9 @@ object SPlotToXChartMapper {
       .theme(getChartTheme)
       .build()
 
-    chart.addSeries(plot.seriesName, mapXAxisValues(plot.xValues), mapYAxisValues(plot.yValues))
+    for(series <- plot.series)
+      chart.addSeries(series.name, mapXAxisValues(series.xValues), mapYAxisValues(series.yValues))
+
     chart.getStyler.setLegendVisible(plot.legendVisible)
 
     chart

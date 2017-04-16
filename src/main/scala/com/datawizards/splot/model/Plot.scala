@@ -1,6 +1,5 @@
 package com.datawizards.splot.model
 
-import com.datawizards.splot.model.PlotAxisValues.{XAxisValues, YAxisValues}
 import com.datawizards.splot.model.PlotType.PlotType
 
 class Plot (
@@ -10,15 +9,9 @@ class Plot (
   val title: String,
   val xTitle: String,
   val yTitle: String,
-  val series: PlotSeries,
+  val series: Seq[PlotSeries],
   val legendVisible: Boolean
 ) {
-
-  def xValues: XAxisValues = series.xValues
-
-  def yValues: YAxisValues = series.yValues
-
-  def seriesName: String = series.name
 
   override def toString: String = {
     s"Plot($plotType, $width, $height, $title, $xTitle, $yTitle, $series)"

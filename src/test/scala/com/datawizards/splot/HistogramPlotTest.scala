@@ -19,7 +19,7 @@ class HistogramPlotTest extends SPlotBaseTest {
     }
 
     assertResult(PlotAxisValues.createYAxisValues(Seq(1.0, 2.0, 3.0)), "y values") {
-      plot.yValues
+      plot.series.head.yValues
     }
   }
 

@@ -36,7 +36,7 @@ class PlotsGridTest extends SPlotBaseTest {
     }
 
     assertResult(PlotAxisValues.createYAxisValuesDouble(Seq(1.0, 1.5))) {
-      plotsGrid(PlotBuilder.DefaultSingleGroup, new XAxisValueTypeDouble(1.0)).yValues
+      plotsGrid(PlotBuilder.DefaultSingleGroup, new XAxisValueTypeDouble(1.0)).series.head.yValues
     }
 
   }
@@ -59,7 +59,7 @@ class PlotsGridTest extends SPlotBaseTest {
     }
 
     assertResult(PlotAxisValues.createYAxisValuesDouble(Seq(1.0, 1.5))) {
-      plotsGrid(new XAxisValueTypeDouble(1.0), PlotBuilder.DefaultSingleGroup).yValues
+      plotsGrid(new XAxisValueTypeDouble(1.0), PlotBuilder.DefaultSingleGroup).series.head.yValues
     }
   }
 
@@ -108,19 +108,19 @@ class PlotsGridTest extends SPlotBaseTest {
     }
 
     assertResult(PlotAxisValues.createYAxisValuesInt(Seq(11, 12))) {
-      plotsGrid(PlotBuilder.DefaultSingleGroup, "col1").yValues
+      plotsGrid(PlotBuilder.DefaultSingleGroup, "col1").series.head.yValues
     }
 
     assertResult(PlotAxisValues.createXAxisValuesString(Seq("b1", "b2"))) {
-      plotsGrid(PlotBuilder.DefaultSingleGroup, "col1").xValues
+      plotsGrid(PlotBuilder.DefaultSingleGroup, "col1").series.head.xValues
     }
 
     assertResult(PlotAxisValues.createYAxisValuesInt(Seq(31, 32, 33))) {
-      plotsGrid(PlotBuilder.DefaultSingleGroup, "col3").yValues
+      plotsGrid(PlotBuilder.DefaultSingleGroup, "col3").series.head.yValues
     }
 
     assertResult(PlotAxisValues.createXAxisValuesString(Seq("b1", "b2", "b3"))) {
-      plotsGrid(PlotBuilder.DefaultSingleGroup, "col3").xValues
+      plotsGrid(PlotBuilder.DefaultSingleGroup, "col3").series.head.xValues
     }
 
   }

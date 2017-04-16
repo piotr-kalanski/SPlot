@@ -18,12 +18,16 @@ class BarPlotTest extends SPlotBaseTest {
       plot.plotType
     }
 
+    assertResult(1, "series count") {
+      plot.series.size
+    }
+
     assertResult(PlotAxisValues.createXAxisValuesInt(Seq(1, 2, 3)), "x values") {
-      plot.xValues
+      plot.series.head.xValues
     }
 
     assertResult(PlotAxisValues.createYAxisValuesDouble(data), "y values") {
-      plot.yValues
+      plot.series.head.yValues
     }
   }
 
@@ -41,11 +45,11 @@ class BarPlotTest extends SPlotBaseTest {
     }
 
     assertResult(PlotAxisValues.createXAxisValuesString(xs), "x values") {
-      plot.xValues
+      plot.series.head.xValues
     }
 
     assertResult(PlotAxisValues.createYAxisValuesInt(ys), "y values") {
-      plot.yValues
+      plot.series.head.yValues
     }
   }
 
