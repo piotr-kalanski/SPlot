@@ -105,6 +105,24 @@ class PlotBuilder[T](data: Iterable[T]) {
   }
 
   /**
+    * Select histogram chart
+    *
+    * @param values function mapping element of collection to values
+    */
+  def histogramForCategories(values: T => String): this.type = {
+    plotType = PlotType.Bar
+
+    val (xVals, yVals) = data
+      .groupBy(values)
+      .mapValues(x => x.size)
+      .unzip
+
+    xValues = PlotAxisValues.createXAxisValuesString(xVals)
+    yValues = PlotAxisValues.createYAxisValuesInt(yVals)
+    this
+  }
+
+  /**
     * Change chart title
     *
     * @param title new chart title
@@ -299,7 +317,7 @@ class PlotBuilderForDouble(data: Iterable[Double]) extends PlotBuilder[Double](d
     *
     */
   def histogram(): this.type = {
-    histogram(x => x)
+    histogram(x => x, PlotBuilder.DefaultHistogramBins)
   }
 
   /**
@@ -325,7 +343,7 @@ class PlotBuilderForInt(data: Iterable[Int]) extends PlotBuilder[Int](data) {
     *
     */
   def histogram(): this.type = {
-    histogram(x => x)
+    histogram(x => x, PlotBuilder.DefaultHistogramBins)
   }
 
   /**

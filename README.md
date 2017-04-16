@@ -202,6 +202,20 @@ gaussians.plotHistogram(100)
 
 ![](images/histogram_for_gaussians.png)
 
+### Histogram for categorical data
+
+```scala
+people
+    .buildPlot()
+    .histogramForCategories(_.education)
+    .size(400, 300)
+    .titles("People by education", "Education", "Count")
+    .legendVisible(false)
+    .display()
+```
+
+![](images/histogram_for_categories.png)
+
 # Multiple series
 
 ```scala
