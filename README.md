@@ -14,6 +14,22 @@ Currently project is **NOT** focused on:
 
 # Getting started
 
+Include dependency:
+
+```scala
+"com.github.piotr-kalanski" % "splot" % "0.1.0"
+```
+
+or
+
+```xml
+<dependency>
+    <groupId>com.github.piotr-kalanski</groupId>
+    <artifactId>splot</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+
 Import implicits, which adds methods to Scala collection enabling plotting:
 ```scala
 import com.datawizards.splot.api.implicits._
