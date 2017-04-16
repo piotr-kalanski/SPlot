@@ -36,9 +36,11 @@ object PlotsGrid {
           title = if(rowStr == "") colStr else if(colStr == "") rowStr else rowStr + " | " + colStr,
           xTitle = "",
           yTitle = "",
-          xValues = PlotAxisValues.createXAxisValues(xValues),
-          yValues = PlotAxisValues.createYAxisValues(yValues),
-          seriesName = "values",
+          series = new PlotSeries(
+            name = "values",
+            xValues = PlotAxisValues.createXAxisValues(xValues),
+            yValues = PlotAxisValues.createYAxisValues(yValues)
+          ),
           legendVisible = false
         )
       }

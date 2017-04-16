@@ -10,13 +10,17 @@ class Plot (
   val title: String,
   val xTitle: String,
   val yTitle: String,
-  val xValues: XAxisValues,
-  val yValues: YAxisValues,
-  val seriesName: String,
+  val series: PlotSeries,
   val legendVisible: Boolean
 ) {
 
+  def xValues: XAxisValues = series.xValues
+
+  def yValues: YAxisValues = series.yValues
+
+  def seriesName: String = series.name
+
   override def toString: String = {
-    s"Plot($plotType, $width, $height, $title, $xTitle, $yTitle, $xValues, $yValues, $seriesName)"
+    s"Plot($plotType, $width, $height, $title, $xTitle, $yTitle, $series)"
   }
 }
