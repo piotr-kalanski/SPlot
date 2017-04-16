@@ -1,10 +1,10 @@
 name := "SPlot"
 
-organization := "com.datawizards"
+organization := "com.github.piotr-kalanski"
 
-version := "0.1-SNAPSHOT"
+version := "0.1.0"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 libraryDependencies += "org.knowm.xchart" % "xchart" % "3.2.2"
 
