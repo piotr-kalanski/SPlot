@@ -27,6 +27,6 @@ class LegendCustomizationsTest extends SPlotBaseTest {
       .seriesName(customName)
       .display()
 
-    assert(getLastPlot.seriesName === customName)
+    assert(getLastPlot.series.head.name === customName)
   }
 }

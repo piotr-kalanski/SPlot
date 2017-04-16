@@ -14,20 +14,36 @@ object PlotsGrid {
                  yValues: YAxisValues,
                  colsGroupFunction: T => Any,
                  rowsGroupFunction: T => Any,
+                 seriesGroupFunction: T => Any,
                  totalWidth: Int,
                  totalHeight: Int
   ): PlotsGrid = {
     val dataGrouped = (data zip (xValues.values zip yValues.values))
-      .map{case (point,(x,y)) => ((rowsGroupFunction(point), colsGroupFunction(point)), (x,y)) }
+      .map{case (point,(x,y)) => ((rowsGroupFunction(point), colsGroupFunction(point)), (point,x,y)) }
       .groupBy{case (group,_) => group}
 
     val rowsCount = dataGrouped.keys.map(_._1).toSeq.distinct.size
     val colsCount = dataGrouped.keys.map(_._2).toSeq.distinct.size
 
     val plotsMap = dataGrouped.map{case (group, values) =>
-        val (xValues, yValues) = values.map{case (_, (x,y)) => (x,y)}.unzip
+        val (dataWithinGroup, xValues, yValues) = values.map{case (_, (point,x,y)) => (point,x,y)}.unzip3
         val rowStr = group._1.toString
         val colStr = group._2.toString
+
+        val dataGroupedBySeries = (dataWithinGroup zip (xValues zip yValues))
+          .map{case (point,(x,y)) => (seriesGroupFunction(point), (x,y)) }
+          .groupBy{case (seriesGroup,_) => seriesGroup}
+
+        val series = dataGroupedBySeries.map { case (seriesGroup, valuesWithinSeriesGroup) =>
+          val (xValues, yValues) = valuesWithinSeriesGroup.map { case (_, (x, y)) => (x, y) }.unzip
+          val groupStr = seriesGroup.toString
+
+          new PlotSeries(
+            name = groupStr,
+            xValues = PlotAxisValues.createXAxisValues(xValues),
+            yValues = PlotAxisValues.createYAxisValues(yValues)
+          )
+        }
 
         group -> new Plot(
           plotType = plotType,
@@ -36,9 +52,7 @@ object PlotsGrid {
           title = if(rowStr == "") colStr else if(colStr == "") rowStr else rowStr + " | " + colStr,
           xTitle = "",
           yTitle = "",
-          xValues = PlotAxisValues.createXAxisValues(xValues),
-          yValues = PlotAxisValues.createYAxisValues(yValues),
-          seriesName = "values",
+          series = series,
           legendVisible = false
         )
       }

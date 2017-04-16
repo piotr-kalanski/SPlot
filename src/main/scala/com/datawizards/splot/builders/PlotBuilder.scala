@@ -25,9 +25,10 @@ class PlotBuilder[T](data: Iterable[T]) {
   private var xValues: XAxisValues = _
   private var yValues: YAxisValues = _
   private var gridPlot = false
+  private var seriesName: String = "y"
+  private var seriesGroupFunction: T => Any = x => seriesName
   private var colsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
   private var rowsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
-  private var seriesName: String = "y"
   private var legendVisible: Boolean = true
 
   /**
@@ -181,6 +182,11 @@ class PlotBuilder[T](data: Iterable[T]) {
     this
   }
 
+  def seriesBy(seriesGroup: T => Any): this.type = {
+    this.seriesGroupFunction = seriesGroup
+    this
+  }
+
   /**
     * Change series name
     *
@@ -223,16 +229,17 @@ class PlotBuilder[T](data: Iterable[T]) {
   }
 
   private def buildPlot(): Plot = {
-    new Plot(
+    Plot(
       plotType = plotType,
       width = width,
       height = height,
       title = title,
       xTitle = xTitle,
       yTitle = yTitle,
+      data = data,
       xValues = xValues,
       yValues = yValues,
-      seriesName = seriesName,
+      seriesGroupFunction = seriesGroupFunction,
       legendVisible = legendVisible
     )
   }
@@ -245,6 +252,7 @@ class PlotBuilder[T](data: Iterable[T]) {
       yValues = yValues,
       colsGroupFunction = colsGroupFunction,
       rowsGroupFunction = rowsGroupFunction,
+      seriesGroupFunction = seriesGroupFunction,
       totalWidth = width,
       totalHeight = height
     )

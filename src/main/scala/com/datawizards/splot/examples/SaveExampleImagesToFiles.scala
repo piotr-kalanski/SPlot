@@ -129,4 +129,21 @@ object SaveExampleImagesToFiles extends App {
     .legendVisible(false)
     .size(400, 300)
     .save(exportPath+"bar_chart_hide_legend.png", format)
+
+  people
+    .buildPlot()
+    .scatter(_.age, _.income)
+    .seriesBy(_.education)
+    .size(500, 400)
+    .titles("Age and income by education", "age", "income")
+    .save(exportPath+"scatter_chart_with_multiple_series.png", format)
+
+  people
+    .buildPlot()
+    .scatter(_.age, _.income)
+    .size(1200, 300)
+    .colsBy(_.country)
+    .seriesBy(_.education)
+    .save(exportPath+"scatter_chart_with_multiple_columns_and_series.png", format)
+
 }
