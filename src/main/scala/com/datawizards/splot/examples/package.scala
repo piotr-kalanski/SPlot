@@ -19,11 +19,12 @@ package object examples {
   )
 
   val people: Iterable[Person] = for(i <- 1 to 100) yield randomPerson
+  lazy val people1000: Iterable[Person] = for(i <- 1 to 1000) yield randomPerson
 
   private def randomPerson: Person = {
     Person(
       name = "p_" + rand.nextInt(1000),
-      age = rand.nextInt(100),
+      age = Math.abs(50 + (rand.nextGaussian()*10).toInt),
       country = randSelect("PL", "UK", "DE", "USA"),
       education = randSelect("MSc", "BSc", "PhD"),
       income = rand.nextInt(100000)

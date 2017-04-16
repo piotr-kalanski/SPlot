@@ -43,6 +43,8 @@ Seq(1.0, 4.0, 9.0).plotBar()
 import com.datawizards.splot.api.implicits._
 ```
 
+> Please also note that most of below examples are based on randomly generated data!
+
 ## Bar
 
 ### Bar chart for sequence of numbers
@@ -184,7 +186,21 @@ gaussians.plotHistogram(100)
 
 ![](images/histogram_for_gaussians.png)
 
-# Multi charts
+# Multiple series
+
+```scala
+people
+    .buildPlot()
+    .scatter(_.age, _.income)
+    .seriesBy(_.education)
+    .size(500, 400)
+    .titles("Age and income by education", "age", "income")
+    .display()
+```
+
+![](images/scatter_chart_with_multiple_series.png)
+
+# Multiple charts
 
 ## Grouping by cols
 
@@ -241,6 +257,20 @@ groupedPeopleByCountryEducation
 ```
 
 ![](images/bar_chart_grids_with_string.png)
+
+## Multiple columns and series
+
+```scala
+people
+    .buildPlot()
+    .scatter(_.age, _.income)
+    .size(1200, 300)
+    .colsBy(_.country)
+    .seriesBy(_.education)
+    .display()
+```
+
+![](images/scatter_chart_with_multiple_columns_and_series.png)
 
 # Saving plot to file
 
