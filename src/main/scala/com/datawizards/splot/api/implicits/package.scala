@@ -80,6 +80,14 @@ package object implicits {
     def plotHistogram(values: T => Double, bins: Int=PlotBuilder.DefaultHistogramBins): Unit =
       plotBuilder.histogram(values, bins).display()
 
+    /**
+      * Plot histogram chart
+      *
+      * @param values function mapping element of collection to values
+      */
+    def plotHistogramForCategories(values: T => String): Unit =
+      plotBuilder.histogramForCategories(values).display()
+
   }
 
   class IterableDoublePlot(iterable: Iterable[Double]) {

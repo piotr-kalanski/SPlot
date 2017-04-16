@@ -3,7 +3,6 @@ package com.datawizards.splot
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import com.datawizards.splot.api.implicits._
-import com.datawizards.splot.builders.PlotBuilder
 import com.datawizards.splot.model.{PlotAxisValues, PlotType}
 
 @RunWith(classOf[JUnitRunner])

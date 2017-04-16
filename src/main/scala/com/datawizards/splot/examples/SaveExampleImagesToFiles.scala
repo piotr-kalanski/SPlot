@@ -79,6 +79,14 @@ object SaveExampleImagesToFiles extends App {
     .size(400, 300)
     .save(exportPath+"histogram_for_gaussians.png", format)
 
+  people
+    .buildPlot()
+    .histogramForCategories(_.education)
+    .size(400, 300)
+    .titles("People by education", "Education", "Count")
+    .legendVisible(false)
+    .save(exportPath+"histogram_for_categories.png", format)
+
   val populationByCountry = Seq(
     ("DE", 81),
     ("TR", 72),
