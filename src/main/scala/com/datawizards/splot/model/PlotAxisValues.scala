@@ -72,10 +72,24 @@ object PlotAxisValues {
     }
 
     override def toString: String = value.toString
+
+    def +(that: YAxisValueType): YAxisValueType
   }
 
-  class YAxisValueTypeInt(val value: Int) extends YAxisValueType
-  class YAxisValueTypeDouble(val value: Double) extends YAxisValueType
+  class YAxisValueTypeInt(val value: Int) extends YAxisValueType {
+    override def +(that: YAxisValueType): YAxisValueType = that match {
+      case i:YAxisValueTypeInt => new YAxisValueTypeInt(value + i.value)
+      case d:YAxisValueTypeDouble => new YAxisValueTypeDouble(value + d.value)
+
+    }
+  }
+
+  class YAxisValueTypeDouble(val value: Double) extends YAxisValueType {
+    override def +(that: YAxisValueType): YAxisValueType = that match {
+      case i:YAxisValueTypeInt => new YAxisValueTypeDouble(value + i.value)
+      case d:YAxisValueTypeDouble => new YAxisValueTypeDouble(value + d.value)
+    }
+  }
 
   class YAxisValues(val values: Iterable[YAxisValueType]) {
 

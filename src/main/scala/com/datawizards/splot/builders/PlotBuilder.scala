@@ -2,8 +2,9 @@ package com.datawizards.splot.builders
 
 import scala.collection.JavaConversions._
 import com.datawizards.splot.configuration.SPlotConfiguration
+import com.datawizards.splot.functions.AggregationFunction
 import com.datawizards.splot.mapper.SPlotToXChartMapper
-import com.datawizards.splot.model.PlotAxisValues.{XAxisValues, XAxisValueType, YAxisValueType, YAxisValues}
+import com.datawizards.splot.model.PlotAxisValues.{XAxisValueType, XAxisValues, YAxisValueType, YAxisValues}
 import com.datawizards.splot.model.PlotType.PlotType
 import com.datawizards.splot.model._
 import org.knowm.xchart._
@@ -51,6 +52,26 @@ class PlotBuilder[T](data: Iterable[T]) {
   def bar(x: T => XAxisValueType, y: T => YAxisValueType): this.type = {
     plotType = PlotType.Bar
     mapXY(x, y)
+    this
+  }
+
+  /**
+    * Select bar chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param agg function aggregating values
+    */
+  def barWithAggregations(x: T => XAxisValueType, agg: AggregationFunction[T]): this.type = {
+    plotType = PlotType.Bar
+
+    val (xVals, yVals) = data
+      .groupBy(x)
+      .mapValues(vals => agg(vals))
+      .unzip
+
+    xValues = PlotAxisValues.createXAxisValues(xVals)
+    yValues = PlotAxisValues.createYAxisValues(yVals)
+
     this
   }
 
