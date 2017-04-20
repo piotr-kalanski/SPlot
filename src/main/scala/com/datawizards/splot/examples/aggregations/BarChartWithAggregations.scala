@@ -13,6 +13,6 @@ object BarChartWithAggregations extends App {
 
   people
     .buildPlot()
-    .barWithAggregations(_.education, mean(_.income))
+    .barWithAggregations(_.country, mean(_.income))
     .display()
 }

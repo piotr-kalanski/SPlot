@@ -28,8 +28,8 @@ class PlotBuilder[T](data: Iterable[T]) {
   private var gridPlot = false
   private var seriesName: String = "y"
   private var seriesGroupFunction: T => Any = x => seriesName
-  private var colsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
-  private var rowsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
+  private var colsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup // TODO to powinna być funkcja, ktora zostanie wywolana przy budowaniu wykresu
+  private var rowsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup // TODO j.w.
   private var legendVisible: Boolean = true
 
   /**
@@ -39,7 +39,7 @@ class PlotBuilder[T](data: Iterable[T]) {
     */
   def bar(values: T => YAxisValueType): this.type = {
     plotType = PlotType.Bar
-    mapValues(values)
+    mapValues(values) // TODO - tutaj nie powinno byc wywolane mapowanie wartosci, poniewaz w kolejnych krokach moze byc podzial na serie, kolumny lub wiersze
     this
   }
 
