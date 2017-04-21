@@ -1,5 +1,6 @@
 package com.datawizards.splot.model
 
+import com.datawizards.splot.calculations.XYValuesCalculator
 import com.datawizards.splot.model.PlotAxisValues.{XAxisValues, YAxisValues}
 import com.datawizards.splot.model.PlotType.PlotType
 
@@ -10,15 +11,18 @@ object PlotsGrid {
   def apply[T] (
                  data: Iterable[T],
                  plotType: PlotType,
-                 xValues: XAxisValues,
-                 yValues: YAxisValues,
+                 xyValuesCalculator: XYValuesCalculator[T],
                  colsGroupFunction: T => Any,
                  rowsGroupFunction: T => Any,
                  seriesGroupFunction: T => Any,
                  totalWidth: Int,
                  totalHeight: Int
   ): PlotsGrid = {
-    val dataGrouped = (data zip (xValues.values zip yValues.values))
+
+    //TODO - wywolanie funkcji z uwzglednieniem grupowania !!!
+    val (xValues, yValues) = xyValuesCalculator(data)
+
+    val dataGrouped = (data zip (xValues zip yValues))
       .map{case (point,(x,y)) => ((rowsGroupFunction(point), colsGroupFunction(point)), (point,x,y)) }
       .groupBy{case (group,_) => group}
 

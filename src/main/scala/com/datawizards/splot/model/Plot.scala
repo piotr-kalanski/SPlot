@@ -1,5 +1,6 @@
 package com.datawizards.splot.model
 
+import com.datawizards.splot.calculations.XYValuesCalculator
 import com.datawizards.splot.model.PlotAxisValues.{XAxisValues, YAxisValues}
 import com.datawizards.splot.model.PlotType.PlotType
 
@@ -12,13 +13,15 @@ object Plot {
     xTitle: String,
     yTitle: String,
     data: Iterable[T],
-    xValues: XAxisValues,
-    yValues: YAxisValues,
+    xyValuesCalculator: XYValuesCalculator[T],
     seriesGroupFunction: T => Any,
     legendVisible: Boolean
   ): Plot = {
 
-    val dataGrouped = (data zip (xValues.values zip yValues.values))
+    //TODO - wywolanie funkcji z uwzglednieniem grupowania !!!
+    val (xValues, yValues) = xyValuesCalculator(data)
+
+    val dataGrouped = (data zip (xValues zip yValues))
       .map{case (point,(x,y)) => (seriesGroupFunction(point), (x,y)) }
       .groupBy{case (group,_) => group}
 
