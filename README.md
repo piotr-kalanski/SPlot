@@ -234,6 +234,8 @@ people
 
 ## Grouping by cols
 
+### Scatter plot
+
 ```scala
 people
     .buildPlot()
@@ -243,6 +245,19 @@ people
 ```
 
 ![](images/people_groupby_country.png)
+
+### Histogram
+
+```scala
+people
+    .buildPlot()
+    .colsBy(_.education)
+    .histogram(_.age, 50)
+    .size(1200, 400)
+    .display()
+```
+
+![](images/histogram_multiple_columns.png)
 
 ## Grouping by rows
 
@@ -301,6 +316,36 @@ people
 ```
 
 ![](images/scatter_chart_with_multiple_columns_and_series.png)
+
+# Aggregation functions
+
+SPlot enables aggregating your data before displaying chart.
+
+Currently supported aggregation functions:
+
+- count
+- mean
+- sum
+
+## Calculating count
+
+```scala
+  people
+    .buildPlot()
+    .barWithAggregations(_.education, count())
+```
+
+![](images/bar_chart_with_count_aggregation.png)
+
+## Calculating mean
+
+```scala
+  people
+    .buildPlot()
+    .barWithAggregations(_.country, mean(_.income))
+```
+
+![](images/bar_chart_with_mean_aggregation.png)
 
 # Saving plot to file
 

@@ -113,4 +113,6 @@ class BarPlotTest extends SPlotBaseTest {
     }
   }
 
+  // TODO - add test for bar charts by columns (without X axis mapping - sequence)
+
 }

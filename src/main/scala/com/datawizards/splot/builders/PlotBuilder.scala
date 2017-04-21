@@ -41,7 +41,7 @@ class PlotBuilder[T](data: Iterable[T]) {
     */
   def bar(values: T => YAxisValueType): this.type = {
     plotType = PlotType.Bar
-    mapValues(values) // TODO - tutaj nie powinno byc wywolane mapowanie wartosci, poniewaz w kolejnych krokach moze byc podzial na serie, kolumny lub wiersze
+    mapValues(values)
     this
   }
 
@@ -101,6 +101,18 @@ class PlotBuilder[T](data: Iterable[T]) {
   def line(x: T => XAxisValueType, y: T => YAxisValueType): this.type = {
     plotType = PlotType.Line
     mapXY(x, y)
+    this
+  }
+
+  /**
+    * Select line chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param agg function aggregating values
+    */
+  def lineWithAggregations(x: T => XAxisValueType, agg: AggregationFunction[T]): this.type = {
+    plotType = PlotType.Line
+    mapWithAggregator(x, agg)
     this
   }
 

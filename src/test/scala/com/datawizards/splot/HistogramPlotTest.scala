@@ -56,4 +56,6 @@ class HistogramPlotTest extends SPlotBaseTest {
 
   }
 
+
+  // TODO - add test for histogram by series, columns
 }

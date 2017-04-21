@@ -1,6 +1,7 @@
 package com.datawizards.splot.examples
 
 import com.datawizards.splot.api.implicits._
+import com.datawizards.splot.functions.{count, mean}
 import com.datawizards.splot.model.ImageFormats
 
 import scala.util.Random
@@ -124,6 +125,13 @@ object SaveExampleImagesToFiles extends App {
     .size(1200, 300)
     .save(exportPath+"bar_chart_grids_with_string.png", format)
 
+  people1000
+    .buildPlot()
+    .colsBy(_.education)
+    .histogram(_.age, 50)
+    .size(1200, 400)
+    .save(exportPath+"histogram_multiple_columns.png", format)
+
   Seq(1.0, 4.0, 9.0)
     .buildPlot()
     .bar()
@@ -153,5 +161,15 @@ object SaveExampleImagesToFiles extends App {
     .colsBy(_.country)
     .seriesBy(_.education)
     .save(exportPath+"scatter_chart_with_multiple_columns_and_series.png", format)
+
+  people
+    .buildPlot()
+    .barWithAggregations(_.education, count())
+    .save(exportPath+"bar_chart_with_count_aggregation.png", format)
+
+  people
+    .buildPlot()
+    .barWithAggregations(_.country, mean(_.income))
+    .save(exportPath+"bar_chart_with_mean_aggregation.png", format)
 
 }

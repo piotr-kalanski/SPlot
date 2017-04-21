@@ -13,13 +13,19 @@ package object functions {
       data.size
   }
 
-  def mean[T](y: T => YAxisValueType): AggregationFunction[T] = new AggregationFunction[T] {
+  def sum[T](y: T => YAxisValueType): AggregationFunction[T] = new AggregationFunction[T] {
     override def apply(data: Iterable[T]): YAxisValueType = {
       val ys = data.map(y)
-      val sum = ys.reduce(_ + _)
-      sum match {
-        case i:YAxisValueTypeInt => new YAxisValueTypeDouble(1.0 * i.value / ys.size)
-        case d:YAxisValueTypeDouble => new YAxisValueTypeDouble(d.value / ys.size)
+      ys.reduce(_ + _)
+    }
+  }
+
+  def mean[T](y: T => YAxisValueType): AggregationFunction[T] = new AggregationFunction[T] {
+    override def apply(data: Iterable[T]): YAxisValueType = {
+      val size = data.size
+      sum(y)(data) match {
+        case i:YAxisValueTypeInt => new YAxisValueTypeDouble(1.0 * i.value / size)
+        case d:YAxisValueTypeDouble => new YAxisValueTypeDouble(d.value / size)
       }
     }
   }
