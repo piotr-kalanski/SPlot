@@ -1,15 +1,12 @@
 package com.datawizards.splot.mapper
 
-import com.datawizards.splot.configuration.SPlotConfiguration
 import com.datawizards.splot.model.PlotAxisValues._
 import com.datawizards.splot.model.{Plot, PlotType, PlotsGrid}
-import com.datawizards.splot.theme.PlotThemes
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle
 import org.knowm.xchart.internal.Series
 import org.knowm.xchart._
 import org.knowm.xchart.internal.chartpart.Chart
-import org.knowm.xchart.style.Styler
-import org.knowm.xchart.style.Styler.ChartTheme
+import org.knowm.xchart.style._
 
 import scala.collection.JavaConversions._
 
@@ -60,13 +57,17 @@ object SPlotToXChartMapper {
       .title(plot.title)
       .xAxisTitle(plot.xTitle)
       .yAxisTitle(plot.yTitle)
-      .theme(getChartTheme)
       .build()
+
+    plot.theme(chart)
 
     for(series <- plot.series)
       chart.addSeries(series.name, mapXAxisValues(series.xValues), mapYAxisValues(series.yValues))
 
-    chart.getStyler.setLegendVisible(plot.legendVisible)
+    plot.legendVisible match {
+      case Some(b:Boolean) => chart.getStyler.setLegendVisible(b)
+      case None => ()
+    }
 
     chart
   }
@@ -86,20 +87,19 @@ object SPlotToXChartMapper {
       .title(plot.title)
       .xAxisTitle(plot.xTitle)
       .yAxisTitle(plot.yTitle)
-      .theme(getChartTheme)
       .build()
+
+    plot.theme(chart)
 
     for(series <- plot.series)
       chart.addSeries(series.name, mapXAxisValues(series.xValues), mapYAxisValues(series.yValues))
 
-    chart.getStyler.setLegendVisible(plot.legendVisible)
+    plot.legendVisible match {
+      case Some(b:Boolean) => chart.getStyler.setLegendVisible(b)
+      case None => ()
+    }
 
     chart
-  }
-
-  private def getChartTheme: ChartTheme = SPlotConfiguration.plotTheme match {
-    case PlotThemes.ggPlotTheme => ChartTheme.GGPlot2
-    case _ => throw new Exception("Unknown plot theme")
   }
 
   private def mapXAxisValues(plotAxisValues: XAxisValues): java.util.List[_] =

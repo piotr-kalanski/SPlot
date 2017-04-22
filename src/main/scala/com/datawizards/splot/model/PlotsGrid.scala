@@ -2,6 +2,7 @@ package com.datawizards.splot.model
 
 import com.datawizards.splot.calculations.XYValuesCalculator
 import com.datawizards.splot.model.PlotType.PlotType
+import com.datawizards.splot.theme.PlotTheme
 
 import scala.collection.mutable.ListBuffer
 
@@ -15,7 +16,8 @@ object PlotsGrid {
                  rowsGroupFunction: T => Any,
                  seriesGroupFunction: T => Any,
                  totalWidth: Int,
-                 totalHeight: Int
+                 totalHeight: Int,
+                 theme: PlotTheme
   ): PlotsGrid = {
 
     val dataGrouped = data
@@ -49,7 +51,8 @@ object PlotsGrid {
           xTitle = "",
           yTitle = "",
           series = series,
-          legendVisible = false
+          legendVisible = None,
+          theme = theme
         )
       }
 

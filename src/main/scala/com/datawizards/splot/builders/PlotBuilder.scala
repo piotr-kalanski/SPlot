@@ -3,13 +3,14 @@ package com.datawizards.splot.builders
 
 
 import scala.collection.JavaConversions._
-import com.datawizards.splot.configuration.SPlotConfiguration
+import com.datawizards.splot.configuration.SPlotDefaults
 import com.datawizards.splot.functions.AggregationFunction
 import com.datawizards.splot.mapper.SPlotToXChartMapper
 import com.datawizards.splot.model.PlotAxisValues.{XAxisValueType, YAxisValueType}
 import com.datawizards.splot.model.PlotType.PlotType
 import com.datawizards.splot.calculations.XYValuesCalculator
 import com.datawizards.splot.model._
+import com.datawizards.splot.theme.PlotTheme
 import org.knowm.xchart._
 
 object PlotBuilder {
@@ -21,8 +22,8 @@ object PlotBuilder {
 
 class PlotBuilder[T](data: Iterable[T]) {
   private var plotType: PlotType = _
-  private var width = SPlotConfiguration.DefaultWidth
-  private var height = SPlotConfiguration.DefaultHeight
+  private var width = SPlotDefaults.Width
+  private var height = SPlotDefaults.Height
   private var title: String = ""
   private var xTitle: String = "x"
   private var yTitle: String = "y"
@@ -32,7 +33,8 @@ class PlotBuilder[T](data: Iterable[T]) {
   private var colsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
   private var rowsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
   private var xyValuesCalculator: XYValuesCalculator[T] = _
-  private var legendVisible: Boolean = true
+  private var legendVisible: Option[Boolean] = None
+  private var theme: PlotTheme = SPlotDefaults.PlotTheme
 
   /**
     * Select bar chart
@@ -238,7 +240,17 @@ class PlotBuilder[T](data: Iterable[T]) {
     * @param visible legend visibility
     */
   def legendVisible(visible: Boolean): this.type = {
-    this.legendVisible = visible
+    this.legendVisible = Some(visible)
+    this
+  }
+
+  /**
+    * Customize plot theme
+    *
+    * @param theme new plot theme
+    */
+  def theme(theme: PlotTheme): this.type = {
+    this.theme = theme
     this
   }
 
@@ -247,7 +259,7 @@ class PlotBuilder[T](data: Iterable[T]) {
     */
   def display(): Unit = {
     require(plotType != null, "Plot type not selected")
-    val device = SPlotConfiguration.deviceType
+    val device = SPlotDefaults.DeviceType
     if(gridPlot) device.plot(buildPlotsGrid())
     else device.plot(buildPlot())
   }
@@ -274,7 +286,8 @@ class PlotBuilder[T](data: Iterable[T]) {
       data = data,
       xyValuesCalculator = xyValuesCalculator,
       seriesGroupFunction = seriesGroupFunction,
-      legendVisible = legendVisible
+      legendVisible = legendVisible,
+      theme = theme
     )
   }
 
@@ -287,7 +300,8 @@ class PlotBuilder[T](data: Iterable[T]) {
       rowsGroupFunction = rowsGroupFunction,
       seriesGroupFunction = seriesGroupFunction,
       totalWidth = width,
-      totalHeight = height
+      totalHeight = height,
+      theme = theme
     )
   }
 

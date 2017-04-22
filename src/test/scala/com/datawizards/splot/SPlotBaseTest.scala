@@ -3,7 +3,7 @@ package com.datawizards.splot
 import java.util.Date
 
 import com.datawizards.splot.builders.PlotBuilder
-import com.datawizards.splot.configuration.SPlotConfiguration
+import com.datawizards.splot.configuration.SPlotDefaults
 import com.datawizards.splot.device.Device
 import com.datawizards.splot.model.{Plot, PlotAxisValues, PlotSeries, PlotsGrid}
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
@@ -19,7 +19,7 @@ trait SPlotBaseTest extends FunSuite with BeforeAndAfterAll {
   }
 
   override def beforeAll(): Unit = {
-    SPlotConfiguration.deviceType = UnitTestsDevice
+    SPlotDefaults.DeviceType = UnitTestsDevice
   }
 
   /**

@@ -8,6 +8,15 @@ import com.datawizards.splot.api.implicits._
 class LegendCustomizationsTest extends SPlotBaseTest {
   val data = Seq(1.0, 4.0, 9.0)
 
+  test("Don't change legend") {
+    data
+      .buildPlot()
+      .bar()
+      .display()
+
+    assert(getLastPlot.legendVisible === None)
+  }
+
   test("Hide legend") {
     data
       .buildPlot()
@@ -15,7 +24,7 @@ class LegendCustomizationsTest extends SPlotBaseTest {
       .legendVisible(false)
       .display()
 
-    assert(getLastPlot.legendVisible === false)
+    assert(getLastPlot.legendVisible === Some(false))
   }
 
   test("Change series name") {
