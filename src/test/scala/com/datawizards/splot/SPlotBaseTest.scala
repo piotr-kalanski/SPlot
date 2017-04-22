@@ -1,5 +1,7 @@
 package com.datawizards.splot
 
+import java.util.Date
+
 import com.datawizards.splot.builders.PlotBuilder
 import com.datawizards.splot.configuration.SPlotConfiguration
 import com.datawizards.splot.device.Device
@@ -77,6 +79,7 @@ trait SPlotBaseTest extends FunSuite with BeforeAndAfterAll {
       case _:String => PlotAxisValues.createXAxisValuesString(expected.asInstanceOf[Seq[String]])
       case _:Int => PlotAxisValues.createXAxisValuesInt(expected.asInstanceOf[Seq[Int]])
       case _:Double => PlotAxisValues.createXAxisValuesDouble(expected.asInstanceOf[Seq[Double]])
+      case _:Date => PlotAxisValues.createXAxisValuesDate(expected.asInstanceOf[Seq[Date]])
     }
 
     assertResult(xVals) {
