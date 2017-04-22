@@ -428,6 +428,22 @@ Seq(1.0, 4.0, 9.0)
 
 ![](images/bar_chart_hide_legend.png)
 
+## Chart themes
+
+Currently supported themes:
+
+![](images/ggplot_theme.png) ![](images/matplot_theme.png) ![](images/xchart_theme.png) ![](images/splot_theme.png)
+
+To change theme you need to call method *theme()*:
+
+```scala
+data
+    .buildPlot()
+    .bar()
+    .theme(PlotTheme.GGPlot2)
+    .display()
+```
+
 # Credits
 | Library | Category | License |
 | ------- | -------- | ------- |

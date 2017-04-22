@@ -3,6 +3,7 @@ package com.datawizards.splot.examples
 import com.datawizards.splot.api.implicits._
 import com.datawizards.splot.functions.{count, mean}
 import com.datawizards.splot.model.ImageFormats
+import com.datawizards.splot.theme.PlotTheme
 
 import scala.util.Random
 
@@ -180,4 +181,14 @@ object SaveExampleImagesToFiles extends App {
     .size(400, 300)
     .save(exportPath+"bar_chart_with_mean_aggregation.png", format)
 
+  val data = Seq(
+    ("Python", 3.0),
+    ("Java", 4.0),
+    ("Scala", 5.0)
+  )
+
+  data.buildPlot().bar().size(300,150).theme(PlotTheme.GGPlot2).title("ggplot").save(exportPath+"ggplot_theme.png", format)
+  data.buildPlot().bar().size(300,150).theme(PlotTheme.Matlab).title("matlab").save(exportPath+"matplot_theme.png", format)
+  data.buildPlot().bar().size(300,150).theme(PlotTheme.XChart).title("xchart").save(exportPath+"xchart_theme.png", format)
+  data.buildPlot().bar().size(300,150).theme(PlotTheme.SPlot).title("splot").save(exportPath+"splot_theme.png", format)
 }

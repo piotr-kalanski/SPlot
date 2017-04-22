@@ -2,6 +2,7 @@ package com.datawizards.splot.model
 
 import com.datawizards.splot.calculations.XYValuesCalculator
 import com.datawizards.splot.model.PlotType.PlotType
+import com.datawizards.splot.theme.PlotTheme
 
 object Plot {
   def apply[T] (
@@ -14,7 +15,8 @@ object Plot {
     data: Iterable[T],
     xyValuesCalculator: XYValuesCalculator[T],
     seriesGroupFunction: T => Any,
-    legendVisible: Boolean
+    legendVisible: Option[Boolean],
+    theme: PlotTheme
   ): Plot = {
 
     val dataGrouped = data.groupBy(seriesGroupFunction)
@@ -38,7 +40,8 @@ object Plot {
       xTitle = xTitle,
       yTitle = yTitle,
       series = series,
-      legendVisible = legendVisible
+      legendVisible = legendVisible,
+      theme = theme
     )
   }
 
@@ -52,7 +55,8 @@ class Plot (
   val xTitle: String,
   val yTitle: String,
   val series: Iterable[PlotSeries],
-  val legendVisible: Boolean
+  val legendVisible: Option[Boolean],
+  val theme: PlotTheme
 ) {
 
   override def toString: String = {
