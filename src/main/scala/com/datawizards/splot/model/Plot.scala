@@ -58,4 +58,7 @@ class Plot (
   override def toString: String = {
     s"Plot($plotType, $width, $height, $title, $xTitle, $yTitle, $series)"
   }
+
+  def findSeriesByName(seriesName: String): PlotSeries =
+    series.filter(_.name == seriesName).head
 }

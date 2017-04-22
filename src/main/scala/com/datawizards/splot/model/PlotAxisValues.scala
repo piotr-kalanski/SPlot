@@ -4,7 +4,7 @@ object PlotAxisValues {
 
   /*** X Axis ***/
 
-  trait XAxisValueType {
+  trait XAxisValueType extends Any with Ordered[XAxisValueType] {
     def value: Any
 
     override def hashCode: Int = value.hashCode
@@ -19,11 +19,21 @@ object PlotAxisValues {
     }
 
     override def toString: String = value.toString
+
+    def compare(that: XAxisValueType): Int = (this,that) match {
+      case (i1:XAxisValueTypeInt,i2:XAxisValueTypeInt) => i1.value.compare(i2.value)
+      case (d1:XAxisValueTypeDouble,d2:XAxisValueTypeDouble) => d1.value.compare(d2.value)
+      case (i:XAxisValueTypeInt,d:XAxisValueTypeDouble) => i.value.toDouble.compare(d.value)
+      case (d:XAxisValueTypeDouble,i:XAxisValueTypeInt) => d.value.compare(i.value.toDouble)
+      case (s1:XAxisValueTypeString,s2:XAxisValueTypeString) => s1.value.compare(s2.value)
+      case _ => 0
+    }
+
   }
 
-  class XAxisValueTypeInt(val value: Int) extends XAxisValueType
-  class XAxisValueTypeDouble(val value: Double) extends XAxisValueType
-  class XAxisValueTypeString(val value: String) extends XAxisValueType
+  class XAxisValueTypeInt(val value: Int) extends AnyVal with XAxisValueType
+  class XAxisValueTypeDouble(val value: Double) extends AnyVal with XAxisValueType
+  class XAxisValueTypeString(val value: String) extends AnyVal with XAxisValueType
 
   class XAxisValues(val values: Iterable[XAxisValueType]) {
 
@@ -37,6 +47,7 @@ object PlotAxisValues {
         case _ => false
       }
     }
+
   }
 
   def createXAxisValuesInt(values: Iterable[Int]): XAxisValues =
@@ -57,7 +68,7 @@ object PlotAxisValues {
 
   /*** Y Axis ***/
 
-  trait YAxisValueType {
+  trait YAxisValueType extends Any {
     def value: AnyVal
 
     override def hashCode: Int = value.hashCode
@@ -76,7 +87,7 @@ object PlotAxisValues {
     def +(that: YAxisValueType): YAxisValueType
   }
 
-  class YAxisValueTypeInt(val value: Int) extends YAxisValueType {
+  class YAxisValueTypeInt(val value: Int) extends AnyVal with YAxisValueType {
     override def +(that: YAxisValueType): YAxisValueType = that match {
       case i:YAxisValueTypeInt => new YAxisValueTypeInt(value + i.value)
       case d:YAxisValueTypeDouble => new YAxisValueTypeDouble(value + d.value)
@@ -84,7 +95,7 @@ object PlotAxisValues {
     }
   }
 
-  class YAxisValueTypeDouble(val value: Double) extends YAxisValueType {
+  class YAxisValueTypeDouble(val value: Double) extends AnyVal with YAxisValueType {
     override def +(that: YAxisValueType): YAxisValueType = that match {
       case i:YAxisValueTypeInt => new YAxisValueTypeDouble(value + i.value)
       case d:YAxisValueTypeDouble => new YAxisValueTypeDouble(value + d.value)

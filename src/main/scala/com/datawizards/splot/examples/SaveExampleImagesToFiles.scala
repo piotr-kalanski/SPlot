@@ -165,11 +165,13 @@ object SaveExampleImagesToFiles extends App {
   people
     .buildPlot()
     .barWithAggregations(_.education, count())
+    .size(400, 300)
     .save(exportPath+"bar_chart_with_count_aggregation.png", format)
 
   people
     .buildPlot()
     .barWithAggregations(_.country, mean(_.income))
+    .size(400, 300)
     .save(exportPath+"bar_chart_with_mean_aggregation.png", format)
 
 }

@@ -3,7 +3,9 @@ package com.datawizards.splot
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import com.datawizards.splot.api.implicits._
-import com.datawizards.splot.model.{PlotAxisValues, PlotType}
+import com.datawizards.splot.builders.PlotBuilder
+import com.datawizards.splot.model.PlotAxisValues.XAxisValueTypeString
+import com.datawizards.splot.model.PlotType
 
 @RunWith(classOf[JUnitRunner])
 class BarPlotTest extends SPlotBaseTest {
@@ -22,13 +24,7 @@ class BarPlotTest extends SPlotBaseTest {
       plot.series.size
     }
 
-    assertResult(PlotAxisValues.createXAxisValuesInt(Seq(1, 2, 3)), "x values") {
-      plot.series.head.xValues
-    }
-
-    assertResult(PlotAxisValues.createYAxisValuesDouble(data), "y values") {
-      plot.series.head.yValues
-    }
+    assertPlotXYAxisValues(Seq(1, 2, 3), data, getLastPlotFirstSeries)
   }
 
   test("String x values") {
@@ -38,19 +34,12 @@ class BarPlotTest extends SPlotBaseTest {
 
     data.plotBar()
 
-    val plot = getLastPlot
-
     assertResult(PlotType.Bar) {
-      plot.plotType
+      getLastPlot.plotType
     }
 
-    assertResult(PlotAxisValues.createXAxisValuesString(xs), "x values") {
-      plot.series.head.xValues
-    }
+    assertPlotXYAxisValues(xs, ys, getLastPlotFirstSeries)
 
-    assertResult(PlotAxisValues.createYAxisValuesInt(ys), "y values") {
-      plot.series.head.yValues
-    }
   }
 
   test("Change title") {
@@ -94,25 +83,32 @@ class BarPlotTest extends SPlotBaseTest {
       .seriesBy(_._1)
       .display()
 
-    val plot = getLastPlot
-
-    assertResult(PlotAxisValues.createYAxisValuesInt(Seq(11, 12))) {
-      plot.series.filter(_.name == "series1").head.yValues
-    }
-
-    assertResult(PlotAxisValues.createXAxisValuesString(Seq("b1", "b2"))) {
-      plot.series.filter(_.name == "series1").head.xValues
-    }
-
-    assertResult(PlotAxisValues.createYAxisValuesInt(Seq(31, 32, 33))) {
-      plot.series.filter(_.name == "series3").head.yValues
-    }
-
-    assertResult(PlotAxisValues.createXAxisValuesString(Seq("b1", "b2", "b3"))) {
-      plot.series.filter(_.name == "series3").head.xValues
-    }
+    assertPlotXYAxisValues(Seq("b1", "b2"), Seq(11, 12), getLastPlot.findSeriesByName("series1"))
+    assertPlotXYAxisValues(Seq("b1", "b2", "b3"), Seq(31, 32, 33), getLastPlot.findSeriesByName("series3"))
   }
 
-  // TODO - add test for bar charts by columns (without X axis mapping - sequence)
+  test("Multiple columns with sequence of X") {
+    val data = Seq(
+      ("col1", 101),
+      ("col1", 102),
+      ("col1", 103),
+      ("col2", 201),
+      ("col2", 202)
+    )
+
+    data
+      .buildPlot()
+      .bar(_._2)
+      .colsBy(_._1)
+      .display()
+
+    val plotsGrid = getLastPlotsGrid
+
+    val plotCol1 = plotsGrid.plotsMap(PlotBuilder.DefaultSingleGroup, new XAxisValueTypeString("col1"))
+    val plotCol2 = plotsGrid.plotsMap(PlotBuilder.DefaultSingleGroup, new XAxisValueTypeString("col2"))
+
+    assertPlotXYAxisValues(Seq(1,2,3), Seq(101,102,103), plotCol1.series.head)
+    assertPlotXYAxisValues(Seq(1,2), Seq(201,202), plotCol2.series.head)
+  }
 
 }
