@@ -444,7 +444,18 @@ data
     .display()
 ```
 
+# Bugs
+
+Please report any bugs or submit feature requests to [SPlot Github issue tracker](https://github.com/piotr-kalanski/SPlot/issues).
+
+# Continuous Integration
+
+[![Build Status](https://api.travis-ci.org/piotr-kalanski/SPlot.png?branch=development)](https://api.travis-ci.org/piotr-kalanski/SPlot.png?branch=development)
+
+[Build History](https://travis-ci.org/piotr-kalanski/SPlot/builds)
+
 # Credits
+
 | Library | Category | License |
 | ------- | -------- | ------- |
 | [XChart](https://github.com/timmolter/XChart) | Graphing | [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) |
