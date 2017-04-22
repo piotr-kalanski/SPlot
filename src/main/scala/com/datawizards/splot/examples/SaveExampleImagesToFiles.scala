@@ -191,4 +191,6 @@ object SaveExampleImagesToFiles extends App {
   data.buildPlot().bar().size(300,150).theme(PlotTheme.Matlab).title("matlab").save(exportPath+"matplot_theme.png", format)
   data.buildPlot().bar().size(300,150).theme(PlotTheme.XChart).title("xchart").save(exportPath+"xchart_theme.png", format)
   data.buildPlot().bar().size(300,150).theme(PlotTheme.SPlot).title("splot").save(exportPath+"splot_theme.png", format)
+
+  // TODO - example bubble chart !
 }

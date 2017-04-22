@@ -142,6 +142,21 @@ class PlotBuilder[T](data: Iterable[T]) {
   }
 
   /**
+    * Select bubble chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param y function mapping element of collection to y values
+    * @param size function mapping element of collection to bubble size
+    */
+  def bubble(x: T => XAxisValueType, y: T => YAxisValueType, size: T => YAxisValueType): this.type = {
+    plotType = PlotType.Bubble
+    mapXYZ(x, y, size)
+    this
+  }
+
+  //TODO - bubble chart z agregacja
+
+  /**
     * Change chart title
     *
     * @param title new chart title
@@ -311,6 +326,10 @@ class PlotBuilder[T](data: Iterable[T]) {
 
   private def mapValues(values: T => YAxisValueType): Unit = {
     xyValuesCalculator = XYValuesCalculator.createYMapperCalculator(values)
+  }
+
+  private def mapXYZ(x: T => XAxisValueType, y: T => YAxisValueType, z: T => YAxisValueType): Unit = {
+    xyValuesCalculator = XYValuesCalculator.createXYZMapperCalculator(x, y, z)
   }
 
   private def mapWithAggregator(x: T => XAxisValueType, agg: AggregationFunction[T]) = {

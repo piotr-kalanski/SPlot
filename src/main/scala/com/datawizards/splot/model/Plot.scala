@@ -22,13 +22,14 @@ object Plot {
     val dataGrouped = data.groupBy(seriesGroupFunction)
 
     val series = dataGrouped.map{case (group, values) =>
-      val (xValues, yValues) = xyValuesCalculator(values)
+      val (xValues, yValues, zValues) = xyValuesCalculator(values)
       val groupStr = group.toString
 
       new PlotSeries(
         name = groupStr,
         xValues = PlotAxisValues.createXAxisValues(xValues),
-        yValues = PlotAxisValues.createYAxisValues(yValues)
+        yValues = PlotAxisValues.createYAxisValues(yValues),
+        zValues = PlotAxisValues.createYAxisValues(zValues)
       )
     }
 

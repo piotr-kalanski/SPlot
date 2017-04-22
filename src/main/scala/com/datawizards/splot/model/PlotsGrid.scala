@@ -33,13 +33,14 @@ object PlotsGrid {
         val dataGroupedBySeries = values.groupBy(seriesGroupFunction)
 
         val series = dataGroupedBySeries.map { case (seriesGroup, valuesWithinSeriesGroup) =>
-          val (xValues, yValues) = xyValuesCalculator(valuesWithinSeriesGroup)
+          val (xValues, yValues, zValues) = xyValuesCalculator(valuesWithinSeriesGroup)
           val groupStr = seriesGroup.toString
 
           new PlotSeries(
             name = groupStr,
             xValues = PlotAxisValues.createXAxisValues(xValues),
-            yValues = PlotAxisValues.createYAxisValues(yValues)
+            yValues = PlotAxisValues.createYAxisValues(yValues),
+            zValues = PlotAxisValues.createYAxisValues(zValues)
           )
         }
 

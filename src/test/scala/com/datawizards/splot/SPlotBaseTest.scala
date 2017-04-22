@@ -56,6 +56,21 @@ trait SPlotBaseTest extends FunSuite with BeforeAndAfterAll {
     getLastPlotSeriesForColRow(row, PlotBuilder.DefaultSingleGroup)
 
   /**
+    * Assert all X,Y,Z axis values
+    *
+    * @param expectedX expected X values
+    * @param expectedY expected Y values
+    * @param expectedZ expected Z values
+    * @param series result plot series
+    */
+  def assertPlotXYZAxisValues[X,Y,Z](expectedX: Seq[X], expectedY: Seq[Y], expectedZ: Seq[Z], series: PlotSeries): Unit = {
+    val sortedSeries = series.sorted
+    assertPlotXAxisValues(expectedX, sortedSeries)
+    assertPlotYAxisValues(expectedY, sortedSeries)
+    assertPlotZAxisValues(expectedZ, sortedSeries)
+  }
+
+  /**
     * Assert both X,Y axis values
     *
     * @param expectedX expected X values
@@ -102,6 +117,24 @@ trait SPlotBaseTest extends FunSuite with BeforeAndAfterAll {
 
     assertResult(yVals) {
       series.yValues
+    }
+
+  }
+
+  /**
+    * Assert Z axis values
+    *
+    * @param expected expected Z values
+    * @param series result plot series
+    */
+  def assertPlotZAxisValues[T](expected: Seq[T], series: PlotSeries): Unit = {
+    val zVals = expected.head match {
+      case _:Int => PlotAxisValues.createYAxisValuesInt(expected.asInstanceOf[Seq[Int]])
+      case _:Double => PlotAxisValues.createYAxisValuesDouble(expected.asInstanceOf[Seq[Double]])
+    }
+
+    assertResult(zVals) {
+      series.zValues
     }
 
   }

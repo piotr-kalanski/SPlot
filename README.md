@@ -52,6 +52,7 @@ Seq(1.0, 4.0, 9.0).plotBar()
 - Scatter
 - Line
 - Histogram
+- Bubble
 
 > Please note that all below examples **require** importing:
 
