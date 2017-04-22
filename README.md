@@ -190,6 +190,14 @@ data.plotLine(_.age, _.income)
 
 ![](images/line_age_income.png)
 
+### Line chart for sequence of case class
+
+```scala
+timeseriesData2017.plotLine()
+```
+
+![](images/line_timeseries.png)
+
 ## Histogram
 
 ### Histogram for sequence of numbers
@@ -419,6 +427,11 @@ Seq(1.0, 4.0, 9.0)
 ```
 
 ![](images/bar_chart_hide_legend.png)
+
+# Credits
+| Library | Category | License |
+| ------- | -------- | ------- |
+| [XChart](https://github.com/timmolter/XChart) | Graphing | [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) |
 
 # Contact
 

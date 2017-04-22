@@ -1,7 +1,9 @@
 package com.datawizards.splot.api
 
+import java.util.Date
+
 import com.datawizards.splot.builders._
-import com.datawizards.splot.model.PlotAxisValues.{XAxisValueType, XAxisValueTypeDouble, XAxisValueTypeInt, XAxisValueTypeString, YAxisValueType, YAxisValueTypeDouble, YAxisValueTypeInt}
+import com.datawizards.splot.model.PlotAxisValues.{XAxisValueType, XAxisValueTypeDate, XAxisValueTypeDouble, XAxisValueTypeInt, XAxisValueTypeString, YAxisValueType, YAxisValueTypeDouble, YAxisValueTypeInt}
 
 package object implicits {
 
@@ -31,6 +33,12 @@ package object implicits {
 
   implicit def convertIterablePairStringInt(x: Iterable[(String,Int)]): IterablePairStringIntPlot =
     new IterablePairStringIntPlot(x)
+
+  implicit def convertIterablePairDateDouble(x: Iterable[(Date,Double)]): IterablePairDateDoublePlot =
+    new IterablePairDateDoublePlot(x)
+
+  implicit def convertIterablePairDateInt(x: Iterable[(Date,Int)]): IterablePairDateIntPlot =
+    new IterablePairDateIntPlot(x)
 
   class IterablePlot[T](iterable: Iterable[T]) {
     private val plotBuilder = new PlotBuilder[T](iterable)
@@ -189,4 +197,15 @@ package object implicits {
     override def iterablePairOfXYAxis: Iterable[(XAxisValueType, YAxisValueType)] =
       iterable.map(x => (new XAxisValueTypeString(x._1), new YAxisValueTypeInt(x._2)))
   }
+
+  class IterablePairDateDoublePlot(iterable: Iterable[(Date, Double)]) extends IterablePairOfXYAxis {
+    override def iterablePairOfXYAxis: Iterable[(XAxisValueType, YAxisValueType)] =
+      iterable.map(x => (new XAxisValueTypeDate(x._1), new YAxisValueTypeDouble(x._2)))
+  }
+
+  class IterablePairDateIntPlot(iterable: Iterable[(Date, Int)]) extends IterablePairOfXYAxis {
+    override def iterablePairOfXYAxis: Iterable[(XAxisValueType, YAxisValueType)] =
+      iterable.map(x => (new XAxisValueTypeDate(x._1), new YAxisValueTypeInt(x._2)))
+  }
+
 }

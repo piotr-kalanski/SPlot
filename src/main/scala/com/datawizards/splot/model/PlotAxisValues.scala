@@ -1,5 +1,7 @@
 package com.datawizards.splot.model
 
+import java.util.Date
+
 object PlotAxisValues {
 
   /*** X Axis ***/
@@ -26,6 +28,7 @@ object PlotAxisValues {
       case (i:XAxisValueTypeInt,d:XAxisValueTypeDouble) => i.value.toDouble.compare(d.value)
       case (d:XAxisValueTypeDouble,i:XAxisValueTypeInt) => d.value.compare(i.value.toDouble)
       case (s1:XAxisValueTypeString,s2:XAxisValueTypeString) => s1.value.compare(s2.value)
+      case (date1:XAxisValueTypeDate,date2:XAxisValueTypeDate) => date1.value.compareTo(date2.value)
       case _ => 0
     }
 
@@ -34,6 +37,7 @@ object PlotAxisValues {
   class XAxisValueTypeInt(val value: Int) extends AnyVal with XAxisValueType
   class XAxisValueTypeDouble(val value: Double) extends AnyVal with XAxisValueType
   class XAxisValueTypeString(val value: String) extends AnyVal with XAxisValueType
+  class XAxisValueTypeDate(val value: Date) extends AnyVal with XAxisValueType
 
   class XAxisValues(val values: Iterable[XAxisValueType]) {
 
@@ -59,12 +63,16 @@ object PlotAxisValues {
   def createXAxisValuesString(values: Iterable[String]): XAxisValues =
     new XAxisValues(values.map(x => new XAxisValueTypeString(x)))
 
+  def createXAxisValuesDate(values: Iterable[Date]): XAxisValues =
+    new XAxisValues(values.map(x => new XAxisValueTypeDate(x)))
+
   def createXAxisValues(values: Iterable[XAxisValueType]): XAxisValues =
     new XAxisValues(values)
 
   implicit def Int2XAxisValue(x: Int): XAxisValueType = new XAxisValueTypeInt(x)
   implicit def Double2XAxisValue(x: Double): XAxisValueType = new XAxisValueTypeDouble(x)
   implicit def String2XAxisValue(x: String): XAxisValueType = new XAxisValueTypeString(x)
+  implicit def Date2XAxisValue(x: Date): XAxisValueType = new XAxisValueTypeDate(x)
 
   /*** Y Axis ***/
 
@@ -127,4 +135,5 @@ object PlotAxisValues {
 
   implicit def Int2YAxisValue(x: Int): YAxisValueType = new YAxisValueTypeInt(x)
   implicit def Double2YAxisValue(x: Double): YAxisValueType = new YAxisValueTypeDouble(x)
+
 }

@@ -52,6 +52,12 @@ object SaveExampleImagesToFiles extends App {
     AgeIncome(50, 2500.0)
   ).buildPlot().line(_.age, _.income).size(width, height).save(exportPath+"line_age_income.png", format)
 
+  timeseriesData2017
+    .buildPlot()
+    .line()
+    .size(1200, 400)
+    .save(exportPath+"line_timeseries.png", format)
+
   people
     .buildPlot()
     .scatter(_.age, _.income)
