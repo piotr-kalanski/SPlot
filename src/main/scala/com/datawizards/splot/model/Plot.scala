@@ -1,6 +1,6 @@
 package com.datawizards.splot.model
 
-import com.datawizards.splot.model.PlotAxisValues.{XAxisValues, YAxisValues}
+import com.datawizards.splot.calculations.XYValuesCalculator
 import com.datawizards.splot.model.PlotType.PlotType
 
 object Plot {
@@ -12,18 +12,15 @@ object Plot {
     xTitle: String,
     yTitle: String,
     data: Iterable[T],
-    xValues: XAxisValues,
-    yValues: YAxisValues,
+    xyValuesCalculator: XYValuesCalculator[T],
     seriesGroupFunction: T => Any,
     legendVisible: Boolean
   ): Plot = {
 
-    val dataGrouped = (data zip (xValues.values zip yValues.values))
-      .map{case (point,(x,y)) => (seriesGroupFunction(point), (x,y)) }
-      .groupBy{case (group,_) => group}
+    val dataGrouped = data.groupBy(seriesGroupFunction)
 
     val series = dataGrouped.map{case (group, values) =>
-      val (xValues, yValues) = values.map{case (_, (x,y)) => (x,y)}.unzip
+      val (xValues, yValues) = xyValuesCalculator(values)
       val groupStr = group.toString
 
       new PlotSeries(
@@ -61,4 +58,7 @@ class Plot (
   override def toString: String = {
     s"Plot($plotType, $width, $height, $title, $xTitle, $yTitle, $series)"
   }
+
+  def findSeriesByName(seriesName: String): PlotSeries =
+    series.filter(_.name == seriesName).head
 }

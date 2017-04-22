@@ -1,6 +1,6 @@
 package com.datawizards.splot.model
 
-import com.datawizards.splot.model.PlotAxisValues.{XAxisValues, YAxisValues}
+import com.datawizards.splot.calculations.XYValuesCalculator
 import com.datawizards.splot.model.PlotType.PlotType
 
 import scala.collection.mutable.ListBuffer
@@ -10,32 +10,28 @@ object PlotsGrid {
   def apply[T] (
                  data: Iterable[T],
                  plotType: PlotType,
-                 xValues: XAxisValues,
-                 yValues: YAxisValues,
+                 xyValuesCalculator: XYValuesCalculator[T],
                  colsGroupFunction: T => Any,
                  rowsGroupFunction: T => Any,
                  seriesGroupFunction: T => Any,
                  totalWidth: Int,
                  totalHeight: Int
   ): PlotsGrid = {
-    val dataGrouped = (data zip (xValues.values zip yValues.values))
-      .map{case (point,(x,y)) => ((rowsGroupFunction(point), colsGroupFunction(point)), (point,x,y)) }
-      .groupBy{case (group,_) => group}
+
+    val dataGrouped = data
+      .groupBy(point => (rowsGroupFunction(point), colsGroupFunction(point)))
 
     val rowsCount = dataGrouped.keys.map(_._1).toSeq.distinct.size
     val colsCount = dataGrouped.keys.map(_._2).toSeq.distinct.size
 
     val plotsMap = dataGrouped.map{case (group, values) =>
-        val (dataWithinGroup, xValues, yValues) = values.map{case (_, (point,x,y)) => (point,x,y)}.unzip3
         val rowStr = group._1.toString
         val colStr = group._2.toString
 
-        val dataGroupedBySeries = (dataWithinGroup zip (xValues zip yValues))
-          .map{case (point,(x,y)) => (seriesGroupFunction(point), (x,y)) }
-          .groupBy{case (seriesGroup,_) => seriesGroup}
+        val dataGroupedBySeries = values.groupBy(seriesGroupFunction)
 
         val series = dataGroupedBySeries.map { case (seriesGroup, valuesWithinSeriesGroup) =>
-          val (xValues, yValues) = valuesWithinSeriesGroup.map { case (_, (x, y)) => (x, y) }.unzip
+          val (xValues, yValues) = xyValuesCalculator(valuesWithinSeriesGroup)
           val groupStr = seriesGroup.toString
 
           new PlotSeries(

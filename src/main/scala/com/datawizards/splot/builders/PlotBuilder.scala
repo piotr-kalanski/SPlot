@@ -1,10 +1,14 @@
 package com.datawizards.splot.builders
 
+
+
 import scala.collection.JavaConversions._
 import com.datawizards.splot.configuration.SPlotConfiguration
+import com.datawizards.splot.functions.AggregationFunction
 import com.datawizards.splot.mapper.SPlotToXChartMapper
-import com.datawizards.splot.model.PlotAxisValues.{XAxisValues, XAxisValueType, YAxisValueType, YAxisValues}
+import com.datawizards.splot.model.PlotAxisValues.{XAxisValueType, YAxisValueType}
 import com.datawizards.splot.model.PlotType.PlotType
+import com.datawizards.splot.calculations.XYValuesCalculator
 import com.datawizards.splot.model._
 import org.knowm.xchart._
 
@@ -22,13 +26,12 @@ class PlotBuilder[T](data: Iterable[T]) {
   private var title: String = ""
   private var xTitle: String = "x"
   private var yTitle: String = "y"
-  private var xValues: XAxisValues = _
-  private var yValues: YAxisValues = _
   private var gridPlot = false
   private var seriesName: String = "y"
   private var seriesGroupFunction: T => Any = x => seriesName
   private var colsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
   private var rowsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
+  private var xyValuesCalculator: XYValuesCalculator[T] = _
   private var legendVisible: Boolean = true
 
   /**
@@ -51,6 +54,18 @@ class PlotBuilder[T](data: Iterable[T]) {
   def bar(x: T => XAxisValueType, y: T => YAxisValueType): this.type = {
     plotType = PlotType.Bar
     mapXY(x, y)
+    this
+  }
+
+  /**
+    * Select bar chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param agg function aggregating values
+    */
+  def barWithAggregations(x: T => XAxisValueType, agg: AggregationFunction[T]): this.type = {
+    plotType = PlotType.Bar
+    mapWithAggregator(x, agg)
     this
   }
 
@@ -90,6 +105,18 @@ class PlotBuilder[T](data: Iterable[T]) {
   }
 
   /**
+    * Select line chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param agg function aggregating values
+    */
+  def lineWithAggregations(x: T => XAxisValueType, agg: AggregationFunction[T]): this.type = {
+    plotType = PlotType.Line
+    mapWithAggregator(x, agg)
+    this
+  }
+
+  /**
     * Select histogram chart
     *
     * @param values function mapping element of collection to values
@@ -97,10 +124,7 @@ class PlotBuilder[T](data: Iterable[T]) {
     */
   def histogram(values: T => Double, bins: Int = PlotBuilder.DefaultHistogramBins): this.type = {
     plotType = PlotType.Histogram
-    val rawValues = data.map(values).map(v => new java.lang.Double(v))
-    val histogram = new Histogram(rawValues, bins)
-    xValues = PlotAxisValues.createXAxisValuesDouble(histogram.getxAxisData().toIterable.map(d => d.toDouble))
-    yValues = PlotAxisValues.createYAxisValuesDouble(histogram.getyAxisData().toIterable.map(d => d.toDouble))
+    xyValuesCalculator = XYValuesCalculator.createNumericalHistogramCalculator(values, bins)
     this
   }
 
@@ -111,14 +135,7 @@ class PlotBuilder[T](data: Iterable[T]) {
     */
   def histogramForCategories(values: T => String): this.type = {
     plotType = PlotType.Bar
-
-    val (xVals, yVals) = data
-      .groupBy(values)
-      .mapValues(x => x.size)
-      .unzip
-
-    xValues = PlotAxisValues.createXAxisValuesString(xVals)
-    yValues = PlotAxisValues.createYAxisValuesInt(yVals)
+    xyValuesCalculator = XYValuesCalculator.createCategoricalHistogramCalculator(values)
     this
   }
 
@@ -255,8 +272,7 @@ class PlotBuilder[T](data: Iterable[T]) {
       xTitle = xTitle,
       yTitle = yTitle,
       data = data,
-      xValues = xValues,
-      yValues = yValues,
+      xyValuesCalculator = xyValuesCalculator,
       seriesGroupFunction = seriesGroupFunction,
       legendVisible = legendVisible
     )
@@ -266,8 +282,7 @@ class PlotBuilder[T](data: Iterable[T]) {
     PlotsGrid(
       data = data,
       plotType = plotType,
-      xValues = xValues,
-      yValues = yValues,
+      xyValuesCalculator = xyValuesCalculator,
       colsGroupFunction = colsGroupFunction,
       rowsGroupFunction = rowsGroupFunction,
       seriesGroupFunction = seriesGroupFunction,
@@ -277,13 +292,15 @@ class PlotBuilder[T](data: Iterable[T]) {
   }
 
   private def mapXY(x: T => XAxisValueType, y: T => YAxisValueType): Unit = {
-    yValues = PlotAxisValues.createYAxisValues(data.map(y))
-    xValues = PlotAxisValues.createXAxisValues(data.map(x))
+    xyValuesCalculator = XYValuesCalculator.createXYMapperCalculator(x, y)
   }
 
   private def mapValues(values: T => YAxisValueType): Unit = {
-    xValues = PlotAxisValues.createXAxisValuesInt(data.zipWithIndex.map(1 + _._2))
-    yValues = PlotAxisValues.createYAxisValues(data.map(values))
+    xyValuesCalculator = XYValuesCalculator.createYMapperCalculator(values)
+  }
+
+  private def mapWithAggregator(x: T => XAxisValueType, agg: AggregationFunction[T]) = {
+    xyValuesCalculator = XYValuesCalculator.createAggregationCalculator(x, agg)
   }
 
   private def savePlot(plot: Plot, path: String, imageFormat: ImageFormat): Unit = {
