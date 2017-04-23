@@ -12,7 +12,7 @@ class BarPlotTest extends SPlotBaseTest {
   test("Bar") {
     val data = Seq(1.0, 4.0, 9.0)
 
-    data.plotBar()
+    data.plotBar(unitTestsDevice)
 
     val plot = getLastPlot
 
@@ -32,7 +32,7 @@ class BarPlotTest extends SPlotBaseTest {
     val ys = Seq(1, 2, 3)
     val data = xs zip ys
 
-    data.plotBar()
+    data.plotBar(unitTestsDevice)
 
     assertResult(PlotType.Bar) {
       getLastPlot.plotType
@@ -49,7 +49,7 @@ class BarPlotTest extends SPlotBaseTest {
       .buildPlot()
       .bar()
       .titles("main title", "x title", "y title")
-      .display()
+      .display(unitTestsDevice)
 
     val plot = getLastPlot
 
@@ -81,7 +81,7 @@ class BarPlotTest extends SPlotBaseTest {
       .buildPlot()
       .bar(_._2, _._3)
       .seriesBy(_._1)
-      .display()
+      .display(unitTestsDevice)
 
     assertPlotXYAxisValues(Seq("b1", "b2"), Seq(11, 12), getLastPlot.findSeriesByName("series1"))
     assertPlotXYAxisValues(Seq("b1", "b2", "b3"), Seq(31, 32, 33), getLastPlot.findSeriesByName("series3"))
@@ -100,7 +100,7 @@ class BarPlotTest extends SPlotBaseTest {
       .buildPlot()
       .bar(_._2)
       .colsBy(_._1)
-      .display()
+      .display(unitTestsDevice)
 
     val plotsGrid = getLastPlotsGrid
 

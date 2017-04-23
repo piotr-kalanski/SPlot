@@ -1,35 +1,28 @@
 package com.datawizards.splot.model
 
-import com.datawizards.splot.calculations.XYValuesCalculator
+import com.datawizards.splot.calculations.PlotSeriesCalculator
 import com.datawizards.splot.model.PlotType.PlotType
 import com.datawizards.splot.theme.PlotTheme
 
 object Plot {
   def apply[T] (
-    plotType: PlotType,
-    width: Int,
-    height: Int,
-    title: String,
-    xTitle: String,
-    yTitle: String,
-    data: Iterable[T],
-    xyValuesCalculator: XYValuesCalculator[T],
-    seriesGroupFunction: T => Any,
-    legendVisible: Option[Boolean],
-    theme: PlotTheme
+                 plotType: PlotType,
+                 width: Int,
+                 height: Int,
+                 title: String,
+                 xTitle: String,
+                 yTitle: String,
+                 data: Iterable[T],
+                 plotSeriesCalculator: PlotSeriesCalculator[T],
+                 seriesGroupFunction: T => Any,
+                 legendVisible: Option[Boolean],
+                 theme: PlotTheme
   ): Plot = {
 
     val dataGrouped = data.groupBy(seriesGroupFunction)
 
-    val series = dataGrouped.map{case (group, values) =>
-      val (xValues, yValues) = xyValuesCalculator(values)
-      val groupStr = group.toString
-
-      new PlotSeries(
-        name = groupStr,
-        xValues = PlotAxisValues.createXAxisValues(xValues),
-        yValues = PlotAxisValues.createYAxisValues(yValues)
-      )
+    val series = dataGrouped.map{
+      case (group, values) => plotSeriesCalculator(group.toString, values)
     }
 
     new Plot(

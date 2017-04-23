@@ -3,6 +3,7 @@ package com.datawizards.splot.api
 import java.util.Date
 
 import com.datawizards.splot.builders._
+import com.datawizards.splot.device.Device
 import com.datawizards.splot.model.PlotAxisValues.{XAxisValueType, XAxisValueTypeDate, XAxisValueTypeDouble, XAxisValueTypeInt, XAxisValueTypeString, YAxisValueType, YAxisValueTypeDouble, YAxisValueTypeInt}
 
 package object implicits {
@@ -112,12 +113,28 @@ package object implicits {
     def plotBar(): Unit = plotBuilder.bar().display()
 
     /**
+      * Plot bar chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotBar(device: Device): Unit = plotBuilder.bar().display(device)
+
+    /**
       * Plot histogram chart
       *
       * @param bins number of bins for histogram
       */
     def plotHistogram(bins: Int=PlotBuilder.DefaultHistogramBins): Unit =
       plotBuilder.histogram(x => x, bins).display()
+
+    /**
+      * Plot histogram chart
+      *
+      * @param bins number of bins for histogram
+      * @param device device that should be used to display plot
+      */
+    def plotHistogram(device: Device, bins: Int): Unit =
+      plotBuilder.histogram(x => x, bins).display(device)
   }
 
   class IterableIntPlot(iterable: Iterable[Int]) {
@@ -132,6 +149,13 @@ package object implicits {
       * Plot bar chart
       */
     def plotBar(): Unit = plotBuilder.bar().display()
+
+    /**
+      * Plot bar chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotBar(device: Device): Unit = plotBuilder.bar().display(device)
 
     /**
       * Plot histogram chart
@@ -158,14 +182,34 @@ package object implicits {
     def plotBar(): Unit = plotBuilder.bar().display()
 
     /**
+      * Plot bar chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotBar(device: Device): Unit = plotBuilder.bar().display(device)
+
+    /**
       * Plot scatter chart
       */
     def plotScatter(): Unit = plotBuilder.scatter().display()
 
     /**
+      * Plot scatter chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotScatter(device: Device): Unit = plotBuilder.scatter().display(device)
+
+    /**
       * Plot line chart
       */
     def plotLine(): Unit = plotBuilder.line().display()
+
+    /**
+      * Plot line chart
+      * @param device device that should be used to display plot
+      */
+    def plotLine(device: Device): Unit = plotBuilder.line().display(device)
   }
 
   class IterablePairDoubleDoublePlot(iterable: Iterable[(Double, Double)]) extends IterablePairOfXYAxis {

@@ -18,6 +18,7 @@ object SPlotToXChartMapper {
       case PlotType.Scatter => mapScatterChart(plot)
       case PlotType.Line => mapLineChart(plot)
       case PlotType.Histogram => mapCategoryChart(plot)
+      case PlotType.Bubble => mapBubbleChart(plot)
       case _ => throw new Exception("Unknown plot type")
     }
   }
@@ -28,6 +29,7 @@ object SPlotToXChartMapper {
       case PlotType.Scatter => mapScatterChartsGrid(plotsGrid)
       case PlotType.Line => mapLineChartsGrid(plotsGrid)
       case PlotType.Histogram => mapCategoryChartsGrid(plotsGrid)
+      case PlotType.Bubble => mapBubbleChartsGrid(plotsGrid)
       case _ => throw new Exception("Unknown plot type")
     }
   }
@@ -50,24 +52,30 @@ object SPlotToXChartMapper {
     charts
   }
 
-  private def mapCategoryChart(plot: Plot): CategoryChart = {
-    val chart = new CategoryChartBuilder()
-      .width(plot.width)
-      .height(plot.height)
-      .title(plot.title)
-      .xAxisTitle(plot.xTitle)
-      .yAxisTitle(plot.yTitle)
-      .build()
+  private def mapBubbleChartsGrid(plotsGrid: PlotsGrid): List[Chart[_ <: Styler, _ <: Series]] = {
+    val charts = plotsGrid.plots.map(mapBubbleChart).toList
+    charts.foreach(ch => ch.getStyler.setLegendVisible(false))
+    charts
+  }
 
-    plot.theme(chart)
+  private def mapCategoryChart(plot: Plot): CategoryChart = {
+    val chart = new CategoryChartBuilder().build()
 
     for(series <- plot.series)
       chart.addSeries(series.name, mapXAxisValues(series.xValues), mapYAxisValues(series.yValues))
 
-    plot.legendVisible match {
-      case Some(b:Boolean) => chart.getStyler.setLegendVisible(b)
-      case None => ()
-    }
+    mapPlotToChart(plot, chart)
+
+    chart
+  }
+
+  private def mapBubbleChart(plot: Plot): BubbleChart = {
+    val chart = new BubbleChartBuilder().build()
+
+    for(series <- plot.series)
+      chart.addSeries(series.name, mapXAxisValues(series.xValues), mapYAxisValues(series.yValues), mapYAxisValues(series.zValues))
+
+    mapPlotToChart(plot, chart)
 
     chart
   }
@@ -81,25 +89,35 @@ object SPlotToXChartMapper {
   }
 
   private def mapXYChart(plot: Plot): XYChart = {
-    val chart = new XYChartBuilder()
-      .width(plot.width)
-      .height(plot.height)
-      .title(plot.title)
-      .xAxisTitle(plot.xTitle)
-      .yAxisTitle(plot.yTitle)
-      .build()
-
-    plot.theme(chart)
+    val chart = new XYChartBuilder().build()
 
     for(series <- plot.series)
       chart.addSeries(series.name, mapXAxisValues(series.xValues), mapYAxisValues(series.yValues))
 
-    plot.legendVisible match {
-      case Some(b:Boolean) => chart.getStyler.setLegendVisible(b)
-      case None => ()
-    }
+    mapPlotToChart(plot, chart)
 
     chart
+  }
+
+  private def mapPlotToChart(plot: Plot, chart: Chart[_, _]): Unit = {
+    chart.setWidth(plot.width)
+    chart.setHeight(plot.height)
+    chart.setTitle(plot.title)
+    chart.setXAxisTitle(plot.xTitle)
+    chart.setYAxisTitle(plot.yTitle)
+
+    plot.theme(chart)
+
+    val styler: Styler = chart match {
+      case c:XYChart => c.getStyler
+      case c:CategoryChart => c.getStyler
+      case c:BubbleChart => c.getStyler
+    }
+
+    plot.legendVisible match {
+      case Some(b:Boolean) => styler.setLegendVisible(b)
+      case None => ()
+    }
   }
 
   private def mapXAxisValues(plotAxisValues: XAxisValues): java.util.List[_] =

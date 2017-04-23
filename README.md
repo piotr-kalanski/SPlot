@@ -52,6 +52,7 @@ Seq(1.0, 4.0, 9.0).plotBar()
 - Scatter
 - Line
 - Histogram
+- Bubble
 
 > Please note that all below examples **require** importing:
 
@@ -190,7 +191,7 @@ data.plotLine(_.age, _.income)
 
 ![](images/line_age_income.png)
 
-### Line chart for sequence of case class
+### Line chart for timeseries data
 
 ```scala
 timeseriesData2017.plotLine()
@@ -223,6 +224,24 @@ people
 ```
 
 ![](images/histogram_for_categories.png)
+
+## Bubble chart
+
+```scala
+  Seq(
+    (1, 1, 9.0),
+    (1, 2, 40.0),
+    (3, 2, 60.0),
+    (2, 2, 90.0),
+    (1, 3, 30.0),
+    (2, 3, 40.0)
+  )
+  .buildPlot()
+  .bubble(_._1, _._2, _._3)
+  .display()
+```
+
+![](images/bubble_chart.png)
 
 # Multiple series
 

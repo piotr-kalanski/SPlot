@@ -1,7 +1,7 @@
 package com.datawizards.splot.theme
 
 import org.knowm.xchart.internal.chartpart.Chart
-import org.knowm.xchart.{CategoryChart, XYChart}
+import org.knowm.xchart.{BubbleChart, CategoryChart, XYChart}
 import org.knowm.xchart.style._
 
 object PlotTheme {
@@ -34,12 +34,25 @@ trait PlotTheme {
 
   def theme: Theme
 
-  def apply(chart: XYChart): Unit = {
+  def apply(chart: Chart[_,_]): Unit = {
+    chart match {
+      case c:XYChart => applyTheme(c)
+      case c:CategoryChart => applyTheme(c)
+      case c:BubbleChart => applyTheme(c)
+    }
+  }
+
+  private def applyTheme(chart: XYChart): Unit = {
     chart.getStyler.setTheme(theme)
     applyAdditionalStyles(chart.getStyler)
   }
 
-  def apply(chart: CategoryChart): Unit = {
+  private def applyTheme(chart: CategoryChart): Unit = {
+    chart.getStyler.setTheme(theme)
+    applyAdditionalStyles(chart.getStyler)
+  }
+
+  private def applyTheme(chart: BubbleChart): Unit = {
     chart.getStyler.setTheme(theme)
     applyAdditionalStyles(chart.getStyler)
   }

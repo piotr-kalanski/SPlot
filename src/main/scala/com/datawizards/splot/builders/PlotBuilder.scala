@@ -1,14 +1,13 @@
 package com.datawizards.splot.builders
 
-
-
 import scala.collection.JavaConversions._
 import com.datawizards.splot.configuration.SPlotDefaults
 import com.datawizards.splot.functions.AggregationFunction
 import com.datawizards.splot.mapper.SPlotToXChartMapper
 import com.datawizards.splot.model.PlotAxisValues.{XAxisValueType, YAxisValueType}
 import com.datawizards.splot.model.PlotType.PlotType
-import com.datawizards.splot.calculations.XYValuesCalculator
+import com.datawizards.splot.calculations.PlotSeriesCalculator
+import com.datawizards.splot.device.Device
 import com.datawizards.splot.model._
 import com.datawizards.splot.theme.PlotTheme
 import org.knowm.xchart._
@@ -32,7 +31,7 @@ class PlotBuilder[T](data: Iterable[T]) {
   private var seriesGroupFunction: T => Any = x => seriesName
   private var colsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
   private var rowsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
-  private var xyValuesCalculator: XYValuesCalculator[T] = _
+  private var plotSeriesCalculator: PlotSeriesCalculator[T] = _
   private var legendVisible: Option[Boolean] = None
   private var theme: PlotTheme = SPlotDefaults.PlotTheme
 
@@ -126,7 +125,7 @@ class PlotBuilder[T](data: Iterable[T]) {
     */
   def histogram(values: T => Double, bins: Int = PlotBuilder.DefaultHistogramBins): this.type = {
     plotType = PlotType.Histogram
-    xyValuesCalculator = XYValuesCalculator.createNumericalHistogramCalculator(values, bins)
+    plotSeriesCalculator = PlotSeriesCalculator.createNumericalHistogramCalculator(values, bins)
     this
   }
 
@@ -137,7 +136,20 @@ class PlotBuilder[T](data: Iterable[T]) {
     */
   def histogramForCategories(values: T => String): this.type = {
     plotType = PlotType.Bar
-    xyValuesCalculator = XYValuesCalculator.createCategoricalHistogramCalculator(values)
+    plotSeriesCalculator = PlotSeriesCalculator.createCategoricalHistogramCalculator(values)
+    this
+  }
+
+  /**
+    * Select bubble chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param y function mapping element of collection to y values
+    * @param size function mapping element of collection to bubble size
+    */
+  def bubble(x: T => XAxisValueType, y: T => YAxisValueType, size: T => YAxisValueType): this.type = {
+    plotType = PlotType.Bubble
+    mapXYZ(x, y, size)
     this
   }
 
@@ -256,12 +268,20 @@ class PlotBuilder[T](data: Iterable[T]) {
 
   /**
     * Display plot using all selected configuration values
+    *
+    * @param device device that should be used to display plot
     */
-  def display(): Unit = {
+  def display(device: Device): Unit = {
     require(plotType != null, "Plot type not selected")
-    val device = SPlotDefaults.DeviceType
     if(gridPlot) device.plot(buildPlotsGrid())
     else device.plot(buildPlot())
+  }
+
+  /**
+    * Display plot using all selected configuration values using default device
+    */
+  def display(): Unit = {
+    display(SPlotDefaults.DeviceType)
   }
 
   /**
@@ -284,7 +304,7 @@ class PlotBuilder[T](data: Iterable[T]) {
       xTitle = xTitle,
       yTitle = yTitle,
       data = data,
-      xyValuesCalculator = xyValuesCalculator,
+      plotSeriesCalculator = plotSeriesCalculator,
       seriesGroupFunction = seriesGroupFunction,
       legendVisible = legendVisible,
       theme = theme
@@ -295,7 +315,7 @@ class PlotBuilder[T](data: Iterable[T]) {
     PlotsGrid(
       data = data,
       plotType = plotType,
-      xyValuesCalculator = xyValuesCalculator,
+      plotSeriesCalculator = plotSeriesCalculator,
       colsGroupFunction = colsGroupFunction,
       rowsGroupFunction = rowsGroupFunction,
       seriesGroupFunction = seriesGroupFunction,
@@ -306,15 +326,19 @@ class PlotBuilder[T](data: Iterable[T]) {
   }
 
   private def mapXY(x: T => XAxisValueType, y: T => YAxisValueType): Unit = {
-    xyValuesCalculator = XYValuesCalculator.createXYMapperCalculator(x, y)
+    plotSeriesCalculator = PlotSeriesCalculator.createXYMapperCalculator(x, y)
   }
 
   private def mapValues(values: T => YAxisValueType): Unit = {
-    xyValuesCalculator = XYValuesCalculator.createYMapperCalculator(values)
+    plotSeriesCalculator = PlotSeriesCalculator.createYMapperCalculator(values)
+  }
+
+  private def mapXYZ(x: T => XAxisValueType, y: T => YAxisValueType, z: T => YAxisValueType): Unit = {
+    plotSeriesCalculator = PlotSeriesCalculator.createXYZMapperCalculator(x, y, z)
   }
 
   private def mapWithAggregator(x: T => XAxisValueType, agg: AggregationFunction[T]) = {
-    xyValuesCalculator = XYValuesCalculator.createAggregationCalculator(x, agg)
+    plotSeriesCalculator = PlotSeriesCalculator.createAggregationCalculator(x, agg)
   }
 
   private def savePlot(plot: Plot, path: String, imageFormat: ImageFormat): Unit = {
