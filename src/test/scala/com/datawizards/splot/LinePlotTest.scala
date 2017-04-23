@@ -3,7 +3,7 @@ package com.datawizards.splot
 import java.util.{Calendar, Date}
 
 import com.datawizards.splot.api.implicits._
-import com.datawizards.splot.model.{PlotAxisValues, PlotType}
+import com.datawizards.splot.model.PlotType
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
@@ -15,7 +15,7 @@ class LinePlotTest extends SPlotBaseTest {
     val ys = xs.map(x => x*x)
     val data = xs zip ys
 
-    data.plotLine()
+    data.plotLine(unitTestsDevice)
 
     val plot = getLastPlot
 
@@ -31,7 +31,7 @@ class LinePlotTest extends SPlotBaseTest {
     val ys = Seq(1.0, 2.0, 3.0)
     val data = xs zip ys
 
-    data.plotLine()
+    data.plotLine(unitTestsDevice)
 
     assertResult(PlotType.Line) {
       getLastPlot.plotType

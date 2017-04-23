@@ -1,6 +1,7 @@
 package com.datawizards.splot
 
 import com.datawizards.splot.api.implicits._
+import com.datawizards.splot.builders.PlotBuilder
 import com.datawizards.splot.model.PlotType
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -17,7 +18,7 @@ class BubblePlotTest extends SPlotBaseTest {
     data
       .buildPlot()
       .bubble(_._1, _._2, _._3)
-      .display()
+      .display(unitTestsDevice)
 
 
     assertResult(PlotType.Bubble) {
@@ -25,6 +26,31 @@ class BubblePlotTest extends SPlotBaseTest {
     }
 
     assertPlotXYZAxisValues(xs, ys, zs, getLastPlotFirstSeries)
+  }
+
+  test("Bubble - multiple columns") {
+    val data = Seq(
+      ("col1",1,1,111.0),
+      ("col1",1,2,112.0),
+      ("col1",2,1,121.0),
+      ("col2",10,10,211.0),
+      ("col2",10,20,212.0),
+      ("col2",20,10,221.0)
+    )
+
+    data
+      .buildPlot()
+      .bubble(_._2, _._3, _._4)
+      .colsBy(_._1)
+      .display(unitTestsDevice)
+
+    val plotsGrid = getLastPlotsGrid
+
+    val plotCol1 = plotsGrid.plotsMap(PlotBuilder.DefaultSingleGroup, "col1")
+    val plotCol2 = plotsGrid.plotsMap(PlotBuilder.DefaultSingleGroup, "col2")
+
+    assertPlotXYZAxisValues(Seq(1,1,2), Seq(1,2,1), Seq(111.0,112.0,121.0), plotCol1.series.head)
+    assertPlotXYZAxisValues(Seq(10,10,20), Seq(10,20,10), Seq(211.0,212.0,221.0), plotCol2.series.head)
   }
 
 }

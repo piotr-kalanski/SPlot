@@ -14,7 +14,7 @@ class ThemeCustomizationsTest extends SPlotBaseTest {
       .buildPlot()
       .bar()
       .theme(PlotTheme.GGPlot2)
-      .display()
+      .display(unitTestsDevice)
 
     assert(getLastPlot.theme == PlotTheme.GGPlot2)
 
@@ -22,7 +22,7 @@ class ThemeCustomizationsTest extends SPlotBaseTest {
       .buildPlot()
       .bar()
       .theme(PlotTheme.Matlab)
-      .display()
+      .display(unitTestsDevice)
 
     assert(getLastPlot.theme == PlotTheme.Matlab)
   }

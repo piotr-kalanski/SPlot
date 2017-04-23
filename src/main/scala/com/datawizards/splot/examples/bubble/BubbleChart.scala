@@ -5,11 +5,11 @@ import com.datawizards.splot.api.implicits._
 object BubbleChart extends App {
   val data = Seq(
     (1, 1, 9.0),
-    (1, 2, 4.0),
-    (3, 2, 6.0),
-    (2, 2, 2.0),
-    (1, 3, 3.0),
-    (2, 3, 4.0)
+    (1, 2, 40.0),
+    (3, 2, 60.0),
+    (2, 2, 90.0),
+    (1, 3, 30.0),
+    (2, 3, 40.0)
   )
 
   data

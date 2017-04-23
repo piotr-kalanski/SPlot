@@ -12,7 +12,7 @@ class LegendCustomizationsTest extends SPlotBaseTest {
     data
       .buildPlot()
       .bar()
-      .display()
+      .display(unitTestsDevice)
 
     assert(getLastPlot.legendVisible === None)
   }
@@ -22,7 +22,7 @@ class LegendCustomizationsTest extends SPlotBaseTest {
       .buildPlot()
       .bar()
       .legendVisible(false)
-      .display()
+      .display(unitTestsDevice)
 
     assert(getLastPlot.legendVisible === Some(false))
   }
@@ -34,7 +34,7 @@ class LegendCustomizationsTest extends SPlotBaseTest {
       .buildPlot()
       .bar()
       .seriesName(customName)
-      .display()
+      .display(unitTestsDevice)
 
     assert(getLastPlot.series.head.name === customName)
   }

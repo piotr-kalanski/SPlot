@@ -4,7 +4,6 @@ import com.datawizards.splot.api.implicits._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import com.datawizards.splot.functions._
-import com.datawizards.splot.model.PlotAxisValues.XAxisValueTypeString
 
 @RunWith(classOf[JUnitRunner])
 class AggregationTests extends SPlotBaseTest {
@@ -18,7 +17,7 @@ class AggregationTests extends SPlotBaseTest {
       "col2"
     )
 
-    data.buildPlot().barWithAggregations(x => x, count()).display()
+    data.buildPlot().barWithAggregations(x => x, count()).display(unitTestsDevice)
 
     assertPlotXYAxisValues(Seq("col1","col2"), Seq(3,2), getLastPlotFirstSeries)
   }
@@ -32,7 +31,7 @@ class AggregationTests extends SPlotBaseTest {
       ("col2", 6)
     )
 
-    data.buildPlot().barWithAggregations(_._1, mean(_._2)).display()
+    data.buildPlot().barWithAggregations(_._1, mean(_._2)).display(unitTestsDevice)
 
     assertPlotXYAxisValues(Seq("col1","col2"), Seq(2.0,5.0), getLastPlotFirstSeries)
   }
@@ -51,7 +50,7 @@ class AggregationTests extends SPlotBaseTest {
       ("series2","category4")
     )
 
-    data.buildPlot().barWithAggregations(_._2, count()).seriesBy(_._1).display()
+    data.buildPlot().barWithAggregations(_._2, count()).seriesBy(_._1).display(unitTestsDevice)
 
     val plotSeries1 = getLastPlot.findSeriesByName("series1")
     val plotSeries2 = getLastPlot.findSeriesByName("series2")
@@ -74,7 +73,7 @@ class AggregationTests extends SPlotBaseTest {
       ("series2","category4",20)
     )
 
-    data.buildPlot().barWithAggregations(_._2, mean(_._3)).seriesBy(_._1).display()
+    data.buildPlot().barWithAggregations(_._2, mean(_._3)).seriesBy(_._1).display(unitTestsDevice)
 
     val plotSeries1 = getLastPlot.findSeriesByName("series1")
     val plotSeries2 = getLastPlot.findSeriesByName("series2")
@@ -97,7 +96,7 @@ class AggregationTests extends SPlotBaseTest {
       ("col2","category4")
     )
 
-    data.buildPlot().barWithAggregations(_._2, count()).colsBy(_._1).display()
+    data.buildPlot().barWithAggregations(_._2, count()).colsBy(_._1).display(unitTestsDevice)
 
     assertPlotXYAxisValues(Seq("category1","category2","category3"), Seq(1,2,1), getLastPlotSeriesForColumn("col1"))
     assertPlotXYAxisValues(Seq("category1","category2","category4"), Seq(1,2,3), getLastPlotSeriesForColumn("col2"))
@@ -117,7 +116,7 @@ class AggregationTests extends SPlotBaseTest {
       ("col2","category4",20)
     )
 
-    data.buildPlot().barWithAggregations(_._2, mean(_._3)).colsBy(_._1).display()
+    data.buildPlot().barWithAggregations(_._2, mean(_._3)).colsBy(_._1).display(unitTestsDevice)
 
     assertPlotXYAxisValues(Seq("category1","category2","category3"), Seq(1.0,3.0,2.0), getLastPlotSeriesForColumn("col1"))
     assertPlotXYAxisValues(Seq("category1","category2","category4"), Seq(10.0,25.0,15.0), getLastPlotSeriesForColumn("col2"))

@@ -23,7 +23,7 @@ class PlotsGridTest extends SPlotBaseTest {
       .buildPlot()
       .scatter()
       .colsBy(_._1)
-      .display()
+      .display(unitTestsDevice)
 
     val plotsGrid = getLastPlotsGrid
 
@@ -46,7 +46,7 @@ class PlotsGridTest extends SPlotBaseTest {
       .buildPlot()
       .scatter()
       .rowsBy(_._1)
-      .display()
+      .display(unitTestsDevice)
 
     val plotsGrid = getLastPlotsGrid
 
@@ -69,7 +69,7 @@ class PlotsGridTest extends SPlotBaseTest {
       .scatter()
       .colsBy(_._1)
       .rowsBy(_._2)
-      .display()
+      .display(unitTestsDevice)
 
     val plotsGrid = getLastPlotsGrid
 
@@ -95,7 +95,7 @@ class PlotsGridTest extends SPlotBaseTest {
     .buildPlot()
     .colsBy(_._1)
     .bar(x => x._2, x => x._3)
-    .display()
+    .display(unitTestsDevice)
 
     val plotsGrid = getLastPlotsGrid
 
@@ -139,7 +139,7 @@ class PlotsGridTest extends SPlotBaseTest {
     .colsBy(_._1)
     .seriesBy(_._2)
     .bar(_._3)
-    .display()
+    .display(unitTestsDevice)
 
     val plotsGrid = getLastPlotsGrid
 

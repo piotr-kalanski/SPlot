@@ -11,7 +11,7 @@ class HistogramPlotTest extends SPlotBaseTest {
   test("Histogram for numbers") {
     val data = Seq(1.0, 2.0, 2.0, 4.0, 4.0, 4.0)
 
-    data.plotHistogram(3)
+    data.plotHistogram(unitTestsDevice, 3)
 
     val plot = getLastPlot
 
@@ -38,7 +38,7 @@ class HistogramPlotTest extends SPlotBaseTest {
       ("p44","category4")
     )
 
-    data.buildPlot().histogramForCategories(_._2).display()
+    data.buildPlot().histogramForCategories(_._2).display(unitTestsDevice)
 
     assertResultForCategory(getLastPlot.series.head, "category1", 1)
     assertResultForCategory(getLastPlot.series.head, "category2", 2)
@@ -61,7 +61,7 @@ class HistogramPlotTest extends SPlotBaseTest {
       ("series2","category4")
     )
 
-    data.buildPlot().histogramForCategories(_._2).seriesBy(_._1).display()
+    data.buildPlot().histogramForCategories(_._2).seriesBy(_._1).display(unitTestsDevice)
 
     val plotSeries1 = getLastPlot.findSeriesByName("series1")
     val plotSeries2 = getLastPlot.findSeriesByName("series2")
@@ -88,7 +88,7 @@ class HistogramPlotTest extends SPlotBaseTest {
       ("col2","category4")
     )
 
-    data.buildPlot().histogramForCategories(_._2).colsBy(_._1).display()
+    data.buildPlot().histogramForCategories(_._2).colsBy(_._1).display(unitTestsDevice)
 
     val plotCol1 = getLastPlotsGrid.plotsMap(PlotBuilder.DefaultSingleGroup, "col1")
     val plotCol2 = getLastPlotsGrid.plotsMap(PlotBuilder.DefaultSingleGroup, "col2")

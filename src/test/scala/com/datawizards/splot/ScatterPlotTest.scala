@@ -12,7 +12,7 @@ class ScatterPlotTest extends SPlotBaseTest {
     val ys = xs.map(x => x*x)
     val data = xs zip ys
 
-    data.plotScatter()
+    data.plotScatter(unitTestsDevice)
 
     val plot = getLastPlot
 

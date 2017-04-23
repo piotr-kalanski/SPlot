@@ -1,6 +1,6 @@
 package com.datawizards.splot.model
 
-import com.datawizards.splot.calculations.XYValuesCalculator
+import com.datawizards.splot.calculations.PlotSeriesCalculator
 import com.datawizards.splot.model.PlotType.PlotType
 import com.datawizards.splot.theme.PlotTheme
 
@@ -11,7 +11,7 @@ object PlotsGrid {
   def apply[T] (
                  data: Iterable[T],
                  plotType: PlotType,
-                 xyValuesCalculator: XYValuesCalculator[T],
+                 plotSeriesCalculator: PlotSeriesCalculator[T],
                  colsGroupFunction: T => Any,
                  rowsGroupFunction: T => Any,
                  seriesGroupFunction: T => Any,
@@ -32,16 +32,8 @@ object PlotsGrid {
 
         val dataGroupedBySeries = values.groupBy(seriesGroupFunction)
 
-        val series = dataGroupedBySeries.map { case (seriesGroup, valuesWithinSeriesGroup) =>
-          val (xValues, yValues, zValues) = xyValuesCalculator(valuesWithinSeriesGroup)
-          val groupStr = seriesGroup.toString
-
-          new PlotSeries(
-            name = groupStr,
-            xValues = PlotAxisValues.createXAxisValues(xValues),
-            yValues = PlotAxisValues.createYAxisValues(yValues),
-            zValues = PlotAxisValues.createYAxisValues(zValues)
-          )
+        val series = dataGroupedBySeries.map {
+            case (seriesGroup, valuesWithinSeriesGroup) => plotSeriesCalculator(seriesGroup.toString, valuesWithinSeriesGroup)
         }
 
         group -> new Plot(

@@ -192,5 +192,18 @@ object SaveExampleImagesToFiles extends App {
   data.buildPlot().bar().size(300,150).theme(PlotTheme.XChart).title("xchart").save(exportPath+"xchart_theme.png", format)
   data.buildPlot().bar().size(300,150).theme(PlotTheme.SPlot).title("splot").save(exportPath+"splot_theme.png", format)
 
-  // TODO - example bubble chart !
+  Seq(
+    (1, 1, 9.0),
+    (1, 2, 20.0),
+    (3, 2, 30.0),
+    (2, 2, 40.0),
+    (1, 3, 10.0),
+    (2, 3, 15.0)
+  )
+  .buildPlot()
+  .bubble(_._1, _._2, _._3)
+  .size(400, 300)
+  .legendVisible(false)
+  .save(exportPath+"bubble_chart.png", format)
+
 }
