@@ -473,6 +473,10 @@ Please report any bugs or submit feature requests to [SPlot Github issue tracker
 
 [Build History](https://travis-ci.org/piotr-kalanski/SPlot/builds)
 
+# Code coverage
+
+[![codecov.io](http://codecov.io/github/piotr-kalanski/SPlot/coverage.svg?branch=development)](http://codecov.io/github/piotr-kalanski/SPlot/coverage.svg?branch=development)
+
 # Credits
 
 | Library | Category | License |
