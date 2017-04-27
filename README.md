@@ -48,11 +48,12 @@ Seq(1.0, 4.0, 9.0).plotBar()
 
 # Supported charts
 
-- Bar
-- Scatter
-- Line
-- Histogram
-- Bubble
+- [Bar](#bar)
+- [Scatter](#scatter)
+- [Line](#line)
+- [Histogram](#histogram)
+- [Bubble](#bubble)
+- [Pie](#pie)
 
 > Please note that all below examples **require** importing:
 
@@ -242,6 +243,23 @@ people
 ```
 
 ![](images/bubble_chart.png)
+
+## Pie
+
+```scala
+Seq(
+    ("DE", 81),
+    ("TR", 72),
+    ("FR", 63),
+    ("UK", 62),
+    ("IT", 61)
+  )
+  .buildPlot()
+  .pie()
+  .display()
+```
+
+![](images/pie_chart.png)
 
 # Multiple series
 

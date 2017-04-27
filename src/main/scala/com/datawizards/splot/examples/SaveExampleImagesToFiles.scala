@@ -206,4 +206,15 @@ object SaveExampleImagesToFiles extends App {
   .legendVisible(false)
   .save(exportPath+"bubble_chart.png", format)
 
+  Seq(
+    ("DE", 81),
+    ("TR", 72),
+    ("FR", 63),
+    ("UK", 62),
+    ("IT", 61)
+  )
+  .buildPlot()
+  .pie()
+  .size(400, 300)
+  .save(exportPath+"pie_chart.png", format)
 }
