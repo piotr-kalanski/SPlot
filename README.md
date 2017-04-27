@@ -48,12 +48,12 @@ Seq(1.0, 4.0, 9.0).plotBar()
 
 # Supported charts
 
-- [Bar](##Bar)
-- [Scatter](##Scatter)
-- [Line](##Line)
-- [Histogram](##Histogram)
-- [Bubble](##Bubble)
-- [Pie](##Pie)
+- [Bar](#bar)
+- [Scatter](#scatter)
+- [Line](#line)
+- [Histogram](#histogram)
+- [Bubble](#bubble)
+- [Pie](#pie)
 
 > Please note that all below examples **require** importing:
 
