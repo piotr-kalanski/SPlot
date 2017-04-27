@@ -19,6 +19,7 @@ object SPlotToXChartMapper {
       case PlotType.Line => mapLineChart(plot)
       case PlotType.Histogram => mapCategoryChart(plot)
       case PlotType.Bubble => mapBubbleChart(plot)
+      case PlotType.Pie => mapPieChart(plot)
       case _ => throw new Exception("Unknown plot type")
     }
   }
@@ -30,6 +31,7 @@ object SPlotToXChartMapper {
       case PlotType.Line => mapLineChartsGrid(plotsGrid)
       case PlotType.Histogram => mapCategoryChartsGrid(plotsGrid)
       case PlotType.Bubble => mapBubbleChartsGrid(plotsGrid)
+      case PlotType.Pie => mapPieChartsGrid(plotsGrid)
       case _ => throw new Exception("Unknown plot type")
     }
   }
@@ -58,6 +60,12 @@ object SPlotToXChartMapper {
     charts
   }
 
+  private def mapPieChartsGrid(plotsGrid: PlotsGrid): List[Chart[_ <: Styler, _ <: Series]] = {
+    val charts = plotsGrid.plots.map(mapPieChart).toList
+    charts.foreach(ch => ch.getStyler.setLegendVisible(false))
+    charts
+  }
+
   private def mapCategoryChart(plot: Plot): CategoryChart = {
     val chart = new CategoryChartBuilder().build()
 
@@ -74,6 +82,22 @@ object SPlotToXChartMapper {
 
     for(series <- plot.series)
       chart.addSeries(series.name, mapXAxisValues(series.xValues), mapYAxisValues(series.yValues), mapYAxisValues(series.zValues))
+
+    mapPlotToChart(plot, chart)
+
+    chart
+  }
+
+  private def mapPieChart(plot: Plot): PieChart = {
+    val chart = new PieChartBuilder().build()
+
+    val seriesCount = plot.series.size
+    for(series <- plot.series) {
+      for((x,y) <- series.xValues.values zip series.yValues.values) {
+        val name = if(seriesCount == 1) x.toString else series.name + " " + x.toString
+        chart.addSeries(name, mapYAxisValueType(y))
+      }
+    }
 
     mapPlotToChart(plot, chart)
 
@@ -112,6 +136,7 @@ object SPlotToXChartMapper {
       case c:XYChart => c.getStyler
       case c:CategoryChart => c.getStyler
       case c:BubbleChart => c.getStyler
+      case c:PieChart => c.getStyler
     }
 
     plot.legendVisible match {
@@ -126,12 +151,14 @@ object SPlotToXChartMapper {
   private def mapYAxisValues(plotAxisValues: YAxisValues): java.util.List[_ <: Number] = {
     plotAxisValues
       .values
-      .map(_.value)
-      .map {
-        case i:Int => new java.lang.Integer(i)
-        case d:Double => new java.lang.Double(d)
-        case _ => throw new Exception("Not supported type.")
-      }
+      .map(mapYAxisValueType)
       .toList
   }
+
+  private def mapYAxisValueType(y: YAxisValueType): Number = y.value match {
+    case i:Int => new java.lang.Integer(i)
+    case d:Double => new java.lang.Double(d)
+    case _ => throw new Exception("Not supported type.")
+  }
+
 }

@@ -154,6 +154,41 @@ class PlotBuilder[T](data: Iterable[T]) {
   }
 
   /**
+    * Select pie chart
+    *
+    * @param values function mapping element of collection to values of bar chart
+    */
+  def pie(values: T => YAxisValueType): this.type = {
+    plotType = PlotType.Pie
+    mapValues(values)
+    this
+  }
+
+  /**
+    * Select pie chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param y function mapping element of collection to y values
+    */
+  def pie(x: T => XAxisValueType, y: T => YAxisValueType): this.type = {
+    plotType = PlotType.Pie
+    mapXY(x, y)
+    this
+  }
+
+  /**
+    * Select pie chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param agg function aggregating values
+    */
+  def pieWithAggregations(x: T => XAxisValueType, agg: AggregationFunction[T]): this.type = {
+    plotType = PlotType.Pie
+    mapWithAggregator(x, agg)
+    this
+  }
+
+  /**
     * Change chart title
     *
     * @param title new chart title
@@ -384,6 +419,11 @@ class PlotBuilderForDouble(data: Iterable[Double]) extends PlotBuilder[Double](d
     histogram(x => x, bins)
   }
 
+  /**
+    * Select pie chart
+    */
+  def pie(): this.type = pie(x => x)
+
 }
 
 class PlotBuilderForInt(data: Iterable[Int]) extends PlotBuilder[Int](data) {
@@ -409,12 +449,18 @@ class PlotBuilderForInt(data: Iterable[Int]) extends PlotBuilder[Int](data) {
   def histogram(bins: Int): this.type = {
     histogram(x => x, bins)
   }
+
+  /**
+    * Select pie chart
+    */
+  def pie(): this.type = pie(x => x)
+
 }
 
 class PlotBuilderForPairOfXYAxis(data: Iterable[(XAxisValueType, YAxisValueType)]) extends PlotBuilder[(XAxisValueType, YAxisValueType)](data) {
 
   /**
-    * Select line chart
+    * Select bar chart
     */
   def bar(): this.type = {
     bar(_._1, _._2)
@@ -434,6 +480,14 @@ class PlotBuilderForPairOfXYAxis(data: Iterable[(XAxisValueType, YAxisValueType)
     */
   def line(): this.type = {
     line(_._1, _._2)
+    this
+  }
+
+  /**
+    * Select pie chart
+    */
+  def pie(): this.type = {
+    pie(_._1, _._2)
     this
   }
 

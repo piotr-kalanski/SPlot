@@ -97,6 +97,21 @@ package object implicits {
     def plotHistogramForCategories(values: T => String): Unit =
       plotBuilder.histogramForCategories(values).display()
 
+    /**
+      * Plot pie chart
+      *
+      * @param values function mapping element of collection to values
+      */
+    def plotPie(values: T => YAxisValueType): Unit = plotBuilder.pie(values).display()
+
+    /**
+      * Plot pie chart
+      *
+      * @param x function mapping element of collection to x values
+      * @param y function mapping element of collection to y values
+      */
+    def plotPie(x: T => XAxisValueType, y: T => YAxisValueType): Unit = plotBuilder.pie(x, y).display()
+
   }
 
   class IterableDoublePlot(iterable: Iterable[Double]) {
@@ -135,6 +150,19 @@ package object implicits {
       */
     def plotHistogram(device: Device, bins: Int): Unit =
       plotBuilder.histogram(x => x, bins).display(device)
+
+    /**
+      * Plot pie chart
+      */
+    def plotPie(): Unit = plotBuilder.pie().display()
+
+    /**
+      * Plot bar chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotPie(device: Device): Unit = plotBuilder.pie().display(device)
+
   }
 
   class IterableIntPlot(iterable: Iterable[Int]) {
@@ -164,6 +192,19 @@ package object implicits {
       */
     def plotHistogram(bins: Int=PlotBuilder.DefaultHistogramBins): Unit =
       plotBuilder.histogram(x => x, bins).display()
+
+    /**
+      * Plot pie chart
+      */
+    def plotPie(): Unit = plotBuilder.pie().display()
+
+    /**
+      * Plot pie chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotPie(device: Device): Unit = plotBuilder.pie().display(device)
+
   }
 
   trait IterablePairOfXYAxis {
@@ -210,6 +251,19 @@ package object implicits {
       * @param device device that should be used to display plot
       */
     def plotLine(device: Device): Unit = plotBuilder.line().display(device)
+
+    /**
+      * Plot pie chart
+      */
+    def plotPie(): Unit = plotBuilder.pie().display()
+
+    /**
+      * Plot pie chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotPie(device: Device): Unit = plotBuilder.pie().display(device)
+
   }
 
   class IterablePairDoubleDoublePlot(iterable: Iterable[(Double, Double)]) extends IterablePairOfXYAxis {
