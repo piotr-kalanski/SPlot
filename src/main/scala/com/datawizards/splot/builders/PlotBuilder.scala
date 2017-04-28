@@ -1,11 +1,15 @@
 package com.datawizards.splot.builders
 
 import scala.collection.JavaConversions._
-import com.datawizards.splot.configuration.SPlotConfiguration
+import com.datawizards.splot.configuration.SPlotDefaults
+import com.datawizards.splot.functions.AggregationFunction
 import com.datawizards.splot.mapper.SPlotToXChartMapper
-import com.datawizards.splot.model.PlotAxisValues.{XAxisValues, XAxisValueType, YAxisValueType, YAxisValues}
+import com.datawizards.splot.model.PlotAxisValues.{XAxisValueType, YAxisValueType}
 import com.datawizards.splot.model.PlotType.PlotType
+import com.datawizards.splot.calculations.PlotSeriesCalculator
+import com.datawizards.splot.device.Device
 import com.datawizards.splot.model._
+import com.datawizards.splot.theme.PlotTheme
 import org.knowm.xchart._
 
 object PlotBuilder {
@@ -17,19 +21,20 @@ object PlotBuilder {
 
 class PlotBuilder[T](data: Iterable[T]) {
   private var plotType: PlotType = _
-  private var width = SPlotConfiguration.DefaultWidth
-  private var height = SPlotConfiguration.DefaultHeight
+  private var width = SPlotDefaults.Width
+  private var height = SPlotDefaults.Height
   private var title: String = ""
   private var xTitle: String = "x"
   private var yTitle: String = "y"
-  private var xValues: XAxisValues = _
-  private var yValues: YAxisValues = _
   private var gridPlot = false
   private var seriesName: String = "y"
   private var seriesGroupFunction: T => Any = x => seriesName
   private var colsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
   private var rowsGroupFunction: T => Any = x => PlotBuilder.DefaultSingleGroup
-  private var legendVisible: Boolean = true
+  private var plotSeriesCalculator: PlotSeriesCalculator[T] = _
+  private var legendVisible: Option[Boolean] = None
+  private var theme: PlotTheme = SPlotDefaults.PlotTheme
+  private var showAnnotations: Option[Boolean] = None
 
   /**
     * Select bar chart
@@ -51,6 +56,18 @@ class PlotBuilder[T](data: Iterable[T]) {
   def bar(x: T => XAxisValueType, y: T => YAxisValueType): this.type = {
     plotType = PlotType.Bar
     mapXY(x, y)
+    this
+  }
+
+  /**
+    * Select bar chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param agg function aggregating values
+    */
+  def barWithAggregations(x: T => XAxisValueType, agg: AggregationFunction[T]): this.type = {
+    plotType = PlotType.Bar
+    mapWithAggregator(x, agg)
     this
   }
 
@@ -90,6 +107,18 @@ class PlotBuilder[T](data: Iterable[T]) {
   }
 
   /**
+    * Select line chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param agg function aggregating values
+    */
+  def lineWithAggregations(x: T => XAxisValueType, agg: AggregationFunction[T]): this.type = {
+    plotType = PlotType.Line
+    mapWithAggregator(x, agg)
+    this
+  }
+
+  /**
     * Select histogram chart
     *
     * @param values function mapping element of collection to values
@@ -97,10 +126,89 @@ class PlotBuilder[T](data: Iterable[T]) {
     */
   def histogram(values: T => Double, bins: Int = PlotBuilder.DefaultHistogramBins): this.type = {
     plotType = PlotType.Histogram
-    val rawValues = data.map(values).map(v => new java.lang.Double(v))
-    val histogram = new Histogram(rawValues, bins)
-    xValues = PlotAxisValues.createXAxisValuesDouble(histogram.getxAxisData().toIterable.map(d => d.toDouble))
-    yValues = PlotAxisValues.createYAxisValuesDouble(histogram.getyAxisData().toIterable.map(d => d.toDouble))
+    plotSeriesCalculator = PlotSeriesCalculator.createNumericalHistogramCalculator(values, bins)
+    this
+  }
+
+  /**
+    * Select histogram chart
+    *
+    * @param values function mapping element of collection to values
+    */
+  def histogramForCategories(values: T => String): this.type = {
+    plotType = PlotType.Bar
+    plotSeriesCalculator = PlotSeriesCalculator.createCategoricalHistogramCalculator(values)
+    this
+  }
+
+  /**
+    * Select bubble chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param y function mapping element of collection to y values
+    * @param size function mapping element of collection to bubble size
+    */
+  def bubble(x: T => XAxisValueType, y: T => YAxisValueType, size: T => YAxisValueType): this.type = {
+    plotType = PlotType.Bubble
+    mapXYZ(x, y, size)
+    this
+  }
+
+  /**
+    * Select pie chart
+    *
+    * @param values function mapping element of collection to values of bar chart
+    */
+  def pie(values: T => YAxisValueType): this.type = {
+    plotType = PlotType.Pie
+    mapValues(values)
+    this
+  }
+
+  /**
+    * Select pie chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param y function mapping element of collection to y values
+    */
+  def pie(x: T => XAxisValueType, y: T => YAxisValueType): this.type = {
+    plotType = PlotType.Pie
+    mapXY(x, y)
+    this
+  }
+
+  /**
+    * Select pie chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param agg function aggregating values
+    */
+  def pieWithAggregations(x: T => XAxisValueType, agg: AggregationFunction[T]): this.type = {
+    plotType = PlotType.Pie
+    mapWithAggregator(x, agg)
+    this
+  }
+
+  /**
+    * Select area chart
+    *
+    * @param values function mapping element of collection to values of line area
+    */
+  def area(values: T => YAxisValueType): this.type = {
+    plotType = PlotType.Area
+    mapValues(values)
+    this
+  }
+
+  /**
+    * Select line chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param y function mapping element of collection to y values
+    */
+  def area(x: T => XAxisValueType, y: T => YAxisValueType): this.type = {
+    plotType = PlotType.Area
+    mapXY(x, y)
     this
   }
 
@@ -203,18 +311,44 @@ class PlotBuilder[T](data: Iterable[T]) {
     * @param visible legend visibility
     */
   def legendVisible(visible: Boolean): this.type = {
-    this.legendVisible = visible
+    this.legendVisible = Some(visible)
+    this
+  }
+
+  /**
+    * Customize plot theme
+    *
+    * @param theme new plot theme
+    */
+  def theme(theme: PlotTheme): this.type = {
+    this.theme = theme
+    this
+  }
+
+  /**
+    * Whether to show annotations
+    */
+  def showAnnotations(show: Boolean): this.type = {
+    this.showAnnotations = Some(show)
     this
   }
 
   /**
     * Display plot using all selected configuration values
+    *
+    * @param device device that should be used to display plot
     */
-  def display(): Unit = {
+  def display(device: Device): Unit = {
     require(plotType != null, "Plot type not selected")
-    val device = SPlotConfiguration.deviceType
     if(gridPlot) device.plot(buildPlotsGrid())
     else device.plot(buildPlot())
+  }
+
+  /**
+    * Display plot using all selected configuration values using default device
+    */
+  def display(): Unit = {
+    display(SPlotDefaults.DeviceType)
   }
 
   /**
@@ -237,10 +371,11 @@ class PlotBuilder[T](data: Iterable[T]) {
       xTitle = xTitle,
       yTitle = yTitle,
       data = data,
-      xValues = xValues,
-      yValues = yValues,
+      plotSeriesCalculator = plotSeriesCalculator,
       seriesGroupFunction = seriesGroupFunction,
-      legendVisible = legendVisible
+      legendVisible = legendVisible,
+      theme = theme,
+      annotations = showAnnotations
     )
   }
 
@@ -248,24 +383,31 @@ class PlotBuilder[T](data: Iterable[T]) {
     PlotsGrid(
       data = data,
       plotType = plotType,
-      xValues = xValues,
-      yValues = yValues,
+      plotSeriesCalculator = plotSeriesCalculator,
       colsGroupFunction = colsGroupFunction,
       rowsGroupFunction = rowsGroupFunction,
       seriesGroupFunction = seriesGroupFunction,
       totalWidth = width,
-      totalHeight = height
+      totalHeight = height,
+      theme = theme,
+      annotations = showAnnotations
     )
   }
 
   private def mapXY(x: T => XAxisValueType, y: T => YAxisValueType): Unit = {
-    yValues = PlotAxisValues.createYAxisValues(data.map(y))
-    xValues = PlotAxisValues.createXAxisValues(data.map(x))
+    plotSeriesCalculator = PlotSeriesCalculator.createXYMapperCalculator(x, y)
   }
 
   private def mapValues(values: T => YAxisValueType): Unit = {
-    xValues = PlotAxisValues.createXAxisValuesInt(data.zipWithIndex.map(1 + _._2))
-    yValues = PlotAxisValues.createYAxisValues(data.map(values))
+    plotSeriesCalculator = PlotSeriesCalculator.createYMapperCalculator(values)
+  }
+
+  private def mapXYZ(x: T => XAxisValueType, y: T => YAxisValueType, z: T => YAxisValueType): Unit = {
+    plotSeriesCalculator = PlotSeriesCalculator.createXYZMapperCalculator(x, y, z)
+  }
+
+  private def mapWithAggregator(x: T => XAxisValueType, agg: AggregationFunction[T]) = {
+    plotSeriesCalculator = PlotSeriesCalculator.createAggregationCalculator(x, agg)
   }
 
   private def savePlot(plot: Plot, path: String, imageFormat: ImageFormat): Unit = {
@@ -299,7 +441,7 @@ class PlotBuilderForDouble(data: Iterable[Double]) extends PlotBuilder[Double](d
     *
     */
   def histogram(): this.type = {
-    histogram(x => x)
+    histogram(x => x, PlotBuilder.DefaultHistogramBins)
   }
 
   /**
@@ -310,6 +452,21 @@ class PlotBuilderForDouble(data: Iterable[Double]) extends PlotBuilder[Double](d
   def histogram(bins: Int): this.type = {
     histogram(x => x, bins)
   }
+
+  /**
+    * Select pie chart
+    */
+  def pie(): this.type = pie(x => x)
+
+  /**
+    * Select line chart
+    */
+  def line(): this.type = line(x => x)
+
+  /**
+    * Select area chart
+    */
+  def area(): this.type = area(x => x)
 
 }
 
@@ -325,7 +482,7 @@ class PlotBuilderForInt(data: Iterable[Int]) extends PlotBuilder[Int](data) {
     *
     */
   def histogram(): this.type = {
-    histogram(x => x)
+    histogram(x => x, PlotBuilder.DefaultHistogramBins)
   }
 
   /**
@@ -336,12 +493,28 @@ class PlotBuilderForInt(data: Iterable[Int]) extends PlotBuilder[Int](data) {
   def histogram(bins: Int): this.type = {
     histogram(x => x, bins)
   }
+
+  /**
+    * Select pie chart
+    */
+  def pie(): this.type = pie(x => x)
+
+  /**
+    * Select line chart
+    */
+  def line(): this.type = line(x => x)
+
+  /**
+    * Select area chart
+    */
+  def area(): this.type = area(x => x)
+
 }
 
 class PlotBuilderForPairOfXYAxis(data: Iterable[(XAxisValueType, YAxisValueType)]) extends PlotBuilder[(XAxisValueType, YAxisValueType)](data) {
 
   /**
-    * Select line chart
+    * Select bar chart
     */
   def bar(): this.type = {
     bar(_._1, _._2)
@@ -361,6 +534,22 @@ class PlotBuilderForPairOfXYAxis(data: Iterable[(XAxisValueType, YAxisValueType)
     */
   def line(): this.type = {
     line(_._1, _._2)
+    this
+  }
+
+  /**
+    * Select pie chart
+    */
+  def pie(): this.type = {
+    pie(_._1, _._2)
+    this
+  }
+
+  /**
+    * Select area chart
+    */
+  def area(): this.type = {
+    area(_._1, _._2)
     this
   }
 

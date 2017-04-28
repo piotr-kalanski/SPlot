@@ -1,9 +1,39 @@
 package com.datawizards.splot.api
 
+import java.util.Date
+
 import com.datawizards.splot.builders._
-import com.datawizards.splot.model.PlotAxisValues.{XAxisValueType, XAxisValueTypeDouble, XAxisValueTypeInt, XAxisValueTypeString, YAxisValueType, YAxisValueTypeDouble, YAxisValueTypeInt}
+import com.datawizards.splot.device.Device
+import com.datawizards.splot.model.PlotAxisValues.{XAxisValueType, XAxisValueTypeDate, XAxisValueTypeDouble, XAxisValueTypeInt, XAxisValueTypeString, YAxisValueType, YAxisValueTypeDouble, YAxisValueTypeInt}
 
 package object implicits {
+
+  object SPlot {
+    def buildPlot(x:Iterable[XAxisValueType], y:Iterable[YAxisValueType]): PlotBuilderForPairOfXYAxis
+      = new PlotBuilderForPairOfXYAxis(x zip y)
+
+    def buildPlot(y:Iterable[Double]): PlotBuilderForDouble
+      = new PlotBuilderForDouble(y)
+
+    def plotBar(x:Iterable[XAxisValueType], y:Iterable[YAxisValueType]): Unit =
+      buildPlot(x,y).bar().display()
+
+    def plotLine(x:Iterable[XAxisValueType], y:Iterable[YAxisValueType]): Unit =
+      buildPlot(x,y).line().display()
+
+    def plotBar(y:Iterable[Double]): Unit = buildPlot(y).bar().display()
+
+    def plotLine(y:Iterable[Double]): Unit = buildPlot(y).line().display()
+
+    def plotScatter(x:Iterable[XAxisValueType], y:Iterable[YAxisValueType]): Unit =
+      buildPlot(x,y).scatter().display()
+
+    def plotArea(x:Iterable[XAxisValueType], y:Iterable[YAxisValueType]): Unit =
+      buildPlot(x,y).area().display()
+
+    def plotHistogram(y:Iterable[Double], bins: Int): Unit =
+      PlotBuilder(y).histogram(y => y, bins).display()
+  }
 
   implicit def convertIterable[T](x: Iterable[T]): IterablePlot[T] =
     new IterablePlot(x)
@@ -31,6 +61,12 @@ package object implicits {
 
   implicit def convertIterablePairStringInt(x: Iterable[(String,Int)]): IterablePairStringIntPlot =
     new IterablePairStringIntPlot(x)
+
+  implicit def convertIterablePairDateDouble(x: Iterable[(Date,Double)]): IterablePairDateDoublePlot =
+    new IterablePairDateDoublePlot(x)
+
+  implicit def convertIterablePairDateInt(x: Iterable[(Date,Int)]): IterablePairDateIntPlot =
+    new IterablePairDateIntPlot(x)
 
   class IterablePlot[T](iterable: Iterable[T]) {
     private val plotBuilder = new PlotBuilder[T](iterable)
@@ -66,10 +102,32 @@ package object implicits {
     /**
       * Plot line chart
       *
+      * @param values function mapping element of collection to values
+      */
+    def plotLine(values: T => YAxisValueType): Unit = plotBuilder.line(values).display()
+
+    /**
+      * Plot line chart
+      *
       * @param x function mapping element of collection to x values
       * @param y function mapping element of collection to y values
       */
     def plotLine(x: T => XAxisValueType, y: T => YAxisValueType): Unit = plotBuilder.line(x, y).display()
+
+    /**
+      * Plot area chart
+      *
+      * @param values function mapping element of collection to values
+      */
+    def plotArea(values: T => YAxisValueType): Unit = plotBuilder.area(values).display()
+
+    /**
+      * Plot area chart
+      *
+      * @param x function mapping element of collection to x values
+      * @param y function mapping element of collection to y values
+      */
+    def plotArea(x: T => XAxisValueType, y: T => YAxisValueType): Unit = plotBuilder.area(x, y).display()
 
     /**
       * Plot histogram chart
@@ -79,6 +137,29 @@ package object implicits {
       */
     def plotHistogram(values: T => Double, bins: Int=PlotBuilder.DefaultHistogramBins): Unit =
       plotBuilder.histogram(values, bins).display()
+
+    /**
+      * Plot histogram chart
+      *
+      * @param values function mapping element of collection to values
+      */
+    def plotHistogramForCategories(values: T => String): Unit =
+      plotBuilder.histogramForCategories(values).display()
+
+    /**
+      * Plot pie chart
+      *
+      * @param values function mapping element of collection to values
+      */
+    def plotPie(values: T => YAxisValueType): Unit = plotBuilder.pie(values).display()
+
+    /**
+      * Plot pie chart
+      *
+      * @param x function mapping element of collection to x values
+      * @param y function mapping element of collection to y values
+      */
+    def plotPie(x: T => XAxisValueType, y: T => YAxisValueType): Unit = plotBuilder.pie(x, y).display()
 
   }
 
@@ -96,12 +177,65 @@ package object implicits {
     def plotBar(): Unit = plotBuilder.bar().display()
 
     /**
+      * Plot bar chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotBar(device: Device): Unit = plotBuilder.bar().display(device)
+
+    /**
       * Plot histogram chart
       *
       * @param bins number of bins for histogram
       */
     def plotHistogram(bins: Int=PlotBuilder.DefaultHistogramBins): Unit =
       plotBuilder.histogram(x => x, bins).display()
+
+    /**
+      * Plot histogram chart
+      *
+      * @param bins number of bins for histogram
+      * @param device device that should be used to display plot
+      */
+    def plotHistogram(device: Device, bins: Int): Unit =
+      plotBuilder.histogram(x => x, bins).display(device)
+
+    /**
+      * Plot pie chart
+      */
+    def plotPie(): Unit = plotBuilder.pie().display()
+
+    /**
+      * Plot bar chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotPie(device: Device): Unit = plotBuilder.pie().display(device)
+
+    /**
+      * Plot line chart
+      */
+    def plotLine(): Unit = plotBuilder.line().display()
+
+    /**
+      * Plot line chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotLine(device: Device): Unit = plotBuilder.line().display(device)
+
+    /**
+      * Plot area chart
+      */
+    def plotArea(): Unit = plotBuilder.area().display()
+
+    /**
+      * Plot area chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotArea(device: Device): Unit = plotBuilder.area().display(device)
+
   }
 
   class IterableIntPlot(iterable: Iterable[Int]) {
@@ -118,12 +252,56 @@ package object implicits {
     def plotBar(): Unit = plotBuilder.bar().display()
 
     /**
+      * Plot bar chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotBar(device: Device): Unit = plotBuilder.bar().display(device)
+
+    /**
       * Plot histogram chart
       *
       * @param bins number of bins for histogram
       */
     def plotHistogram(bins: Int=PlotBuilder.DefaultHistogramBins): Unit =
       plotBuilder.histogram(x => x, bins).display()
+
+    /**
+      * Plot pie chart
+      */
+    def plotPie(): Unit = plotBuilder.pie().display()
+
+    /**
+      * Plot pie chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotPie(device: Device): Unit = plotBuilder.pie().display(device)
+
+    /**
+      * Plot line chart
+      */
+    def plotLine(): Unit = plotBuilder.line().display()
+
+    /**
+      * Plot line chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotLine(device: Device): Unit = plotBuilder.line().display(device)
+
+    /**
+      * Plot area chart
+      */
+    def plotArea(): Unit = plotBuilder.area().display()
+
+    /**
+      * Plot area chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotArea(device: Device): Unit = plotBuilder.area().display(device)
+
   }
 
   trait IterablePairOfXYAxis {
@@ -142,14 +320,59 @@ package object implicits {
     def plotBar(): Unit = plotBuilder.bar().display()
 
     /**
+      * Plot bar chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotBar(device: Device): Unit = plotBuilder.bar().display(device)
+
+    /**
       * Plot scatter chart
       */
     def plotScatter(): Unit = plotBuilder.scatter().display()
 
     /**
+      * Plot scatter chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotScatter(device: Device): Unit = plotBuilder.scatter().display(device)
+
+    /**
       * Plot line chart
       */
     def plotLine(): Unit = plotBuilder.line().display()
+
+    /**
+      * Plot line chart
+      * @param device device that should be used to display plot
+      */
+    def plotLine(device: Device): Unit = plotBuilder.line().display(device)
+
+    /**
+      * Plot pie chart
+      */
+    def plotPie(): Unit = plotBuilder.pie().display()
+
+    /**
+      * Plot pie chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotPie(device: Device): Unit = plotBuilder.pie().display(device)
+
+
+    /**
+      * Plot area chart
+      */
+    def plotArea(): Unit = plotBuilder.area().display()
+
+    /**
+      * Plot area chart
+      * @param device device that should be used to display plot
+      */
+    def plotArea(device: Device): Unit = plotBuilder.area().display(device)
+
   }
 
   class IterablePairDoubleDoublePlot(iterable: Iterable[(Double, Double)]) extends IterablePairOfXYAxis {
@@ -181,4 +404,15 @@ package object implicits {
     override def iterablePairOfXYAxis: Iterable[(XAxisValueType, YAxisValueType)] =
       iterable.map(x => (new XAxisValueTypeString(x._1), new YAxisValueTypeInt(x._2)))
   }
+
+  class IterablePairDateDoublePlot(iterable: Iterable[(Date, Double)]) extends IterablePairOfXYAxis {
+    override def iterablePairOfXYAxis: Iterable[(XAxisValueType, YAxisValueType)] =
+      iterable.map(x => (new XAxisValueTypeDate(x._1), new YAxisValueTypeDouble(x._2)))
+  }
+
+  class IterablePairDateIntPlot(iterable: Iterable[(Date, Int)]) extends IterablePairOfXYAxis {
+    override def iterablePairOfXYAxis: Iterable[(XAxisValueType, YAxisValueType)] =
+      iterable.map(x => (new XAxisValueTypeDate(x._1), new YAxisValueTypeInt(x._2)))
+  }
+
 }

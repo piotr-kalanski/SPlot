@@ -1,7 +1,9 @@
 package com.datawizards.splot.examples
 
 import com.datawizards.splot.api.implicits._
+import com.datawizards.splot.functions.{count, mean}
 import com.datawizards.splot.model.ImageFormats
+import com.datawizards.splot.theme.PlotTheme
 
 import scala.util.Random
 
@@ -51,6 +53,12 @@ object SaveExampleImagesToFiles extends App {
     AgeIncome(50, 2500.0)
   ).buildPlot().line(_.age, _.income).size(width, height).save(exportPath+"line_age_income.png", format)
 
+  timeseriesData2017
+    .buildPlot()
+    .line()
+    .size(1200, 400)
+    .save(exportPath+"line_timeseries.png", format)
+
   people
     .buildPlot()
     .scatter(_.age, _.income)
@@ -78,6 +86,14 @@ object SaveExampleImagesToFiles extends App {
     .histogram(100)
     .size(400, 300)
     .save(exportPath+"histogram_for_gaussians.png", format)
+
+  people
+    .buildPlot()
+    .histogramForCategories(_.education)
+    .size(400, 300)
+    .titles("People by education", "Education", "Count")
+    .legendVisible(false)
+    .save(exportPath+"histogram_for_categories.png", format)
 
   val populationByCountry = Seq(
     ("DE", 81),
@@ -116,6 +132,13 @@ object SaveExampleImagesToFiles extends App {
     .size(1200, 300)
     .save(exportPath+"bar_chart_grids_with_string.png", format)
 
+  people1000
+    .buildPlot()
+    .colsBy(_.education)
+    .histogram(_.age, 50)
+    .size(1200, 400)
+    .save(exportPath+"histogram_multiple_columns.png", format)
+
   Seq(1.0, 4.0, 9.0)
     .buildPlot()
     .bar()
@@ -146,4 +169,69 @@ object SaveExampleImagesToFiles extends App {
     .seriesBy(_.education)
     .save(exportPath+"scatter_chart_with_multiple_columns_and_series.png", format)
 
+  people
+    .buildPlot()
+    .barWithAggregations(_.education, count())
+    .size(400, 300)
+    .save(exportPath+"bar_chart_with_count_aggregation.png", format)
+
+  people
+    .buildPlot()
+    .barWithAggregations(_.country, mean(_.income))
+    .size(400, 300)
+    .save(exportPath+"bar_chart_with_mean_aggregation.png", format)
+
+  val data = Seq(
+    ("Python", 3.0),
+    ("Java", 4.0),
+    ("Scala", 5.0)
+  )
+
+  data.buildPlot().bar().size(300,150).theme(PlotTheme.GGPlot2).title("ggplot").save(exportPath+"ggplot_theme.png", format)
+  data.buildPlot().bar().size(300,150).theme(PlotTheme.Matlab).title("matlab").save(exportPath+"matplot_theme.png", format)
+  data.buildPlot().bar().size(300,150).theme(PlotTheme.XChart).title("xchart").save(exportPath+"xchart_theme.png", format)
+  data.buildPlot().bar().size(300,150).theme(PlotTheme.SPlot).title("splot").save(exportPath+"splot_theme.png", format)
+
+  Seq(
+    (1, 1, 9.0),
+    (1, 2, 20.0),
+    (3, 2, 30.0),
+    (2, 2, 40.0),
+    (1, 3, 10.0),
+    (2, 3, 15.0)
+  )
+  .buildPlot()
+  .bubble(_._1, _._2, _._3)
+  .size(400, 300)
+  .legendVisible(false)
+  .save(exportPath+"bubble_chart.png", format)
+
+  Seq(
+    ("DE", 81),
+    ("TR", 72),
+    ("FR", 63),
+    ("UK", 62),
+    ("IT", 61)
+  )
+  .buildPlot()
+  .pie()
+  .size(400, 300)
+  .save(exportPath+"pie_chart.png", format)
+
+  Seq(
+    (1.0, 1.0),
+    (2.0, 4.0),
+    (3.0, 9.0)
+  )
+  .buildPlot()
+  .area()
+  .size(400, 300)
+  .save(exportPath+"area_chart.png", format)
+
+  Seq(1, 4, 9)
+    .buildPlot()
+    .bar()
+    .showAnnotations(true)
+    .size(400, 300)
+    .save(exportPath+"annotations.png", format)
 }

@@ -1,36 +1,29 @@
 package com.datawizards.splot.model
 
-import com.datawizards.splot.model.PlotAxisValues.{XAxisValues, YAxisValues}
+import com.datawizards.splot.calculations.PlotSeriesCalculator
 import com.datawizards.splot.model.PlotType.PlotType
+import com.datawizards.splot.theme.PlotTheme
 
 object Plot {
   def apply[T] (
-    plotType: PlotType,
-    width: Int,
-    height: Int,
-    title: String,
-    xTitle: String,
-    yTitle: String,
-    data: Iterable[T],
-    xValues: XAxisValues,
-    yValues: YAxisValues,
-    seriesGroupFunction: T => Any,
-    legendVisible: Boolean
+                 plotType: PlotType,
+                 width: Int,
+                 height: Int,
+                 title: String,
+                 xTitle: String,
+                 yTitle: String,
+                 data: Iterable[T],
+                 plotSeriesCalculator: PlotSeriesCalculator[T],
+                 seriesGroupFunction: T => Any,
+                 legendVisible: Option[Boolean],
+                 theme: PlotTheme,
+                 annotations: Option[Boolean] = None
   ): Plot = {
 
-    val dataGrouped = (data zip (xValues.values zip yValues.values))
-      .map{case (point,(x,y)) => (seriesGroupFunction(point), (x,y)) }
-      .groupBy{case (group,_) => group}
+    val dataGrouped = data.groupBy(seriesGroupFunction)
 
-    val series = dataGrouped.map{case (group, values) =>
-      val (xValues, yValues) = values.map{case (_, (x,y)) => (x,y)}.unzip
-      val groupStr = group.toString
-
-      new PlotSeries(
-        name = groupStr,
-        xValues = PlotAxisValues.createXAxisValues(xValues),
-        yValues = PlotAxisValues.createYAxisValues(yValues)
-      )
+    val series = dataGrouped.map{
+      case (group, values) => plotSeriesCalculator(group.toString, values)
     }
 
     new Plot(
@@ -41,7 +34,9 @@ object Plot {
       xTitle = xTitle,
       yTitle = yTitle,
       series = series,
-      legendVisible = legendVisible
+      legendVisible = legendVisible,
+      theme = theme,
+      annotations = annotations
     )
   }
 
@@ -55,10 +50,15 @@ class Plot (
   val xTitle: String,
   val yTitle: String,
   val series: Iterable[PlotSeries],
-  val legendVisible: Boolean
+  val legendVisible: Option[Boolean],
+  val theme: PlotTheme,
+  val annotations: Option[Boolean] = None
 ) {
 
   override def toString: String = {
     s"Plot($plotType, $width, $height, $title, $xTitle, $yTitle, $series)"
   }
+
+  def findSeriesByName(seriesName: String): PlotSeries =
+    series.filter(_.name == seriesName).head
 }

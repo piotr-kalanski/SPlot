@@ -2,6 +2,22 @@
 
 SPlot is Scala library for data visualization.
 
+[![Build Status](https://api.travis-ci.org/piotr-kalanski/SPlot.png?branch=development)](https://api.travis-ci.org/piotr-kalanski/SPlot.png?branch=development)
+[![codecov.io](http://codecov.io/github/piotr-kalanski/SPlot/coverage.svg?branch=development)](http://codecov.io/github/piotr-kalanski/SPlot/coverage.svg?branch=development)
+[<img src="https://img.shields.io/maven-central/v/com.github.piotr-kalanski/splot.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|a%3A%22splot%22)
+[![License](http://img.shields.io/:license-Apache%202-red.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+# Table of contents
+
+- [Goals](#goals)
+- [Getting started](#getting-started)
+- [API possibilities](#api-possibilities)
+- [Supported charts](#supported-charts)
+- [Multiple charts](#multiple-charts)
+- [Aggregation functions](#aggregation-functions)
+- [Saving plot to file](#saving-plot-to-file)
+- [Customizations](#customizations)
+
 # Goals
 
 - Provide simple API in Scala for data visualization similar to ggplot (http://ggplot2.org/) and Seaborn (https://seaborn.pydata.org/)
@@ -17,7 +33,7 @@ Currently project is **NOT** focused on:
 Include dependency:
 
 ```scala
-"com.github.piotr-kalanski" % "splot" % "0.1.0"
+"com.github.piotr-kalanski" % "splot" % "0.2.0"
 ```
 
 or
@@ -26,7 +42,7 @@ or
 <dependency>
     <groupId>com.github.piotr-kalanski</groupId>
     <artifactId>splot</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
@@ -35,7 +51,7 @@ Import implicits, which adds methods to Scala collection enabling plotting:
 import com.datawizards.splot.api.implicits._
 ```
 
-# Basic example
+## Basic example
 
 To plot bar chart using Scala sequence you need to call one method:
 ```scala
@@ -46,12 +62,62 @@ Seq(1.0, 4.0, 9.0).plotBar()
 
 ![](images/basic_bar.png)
 
+# API possibilities
+
+SPlot provides two API's for displaying plots:
+
+## Additional methods on collections
+
+First API enrich Scala collections providing additional methods for plotting charts.
+
+Examples:
+
+```scala
+val data = Seq((1,1),(2,2))
+
+// Plot bar chart:
+data.plotBar()
+
+// Plot line chart:
+data.plotLine()
+
+// Plot scatter chart:
+data.plotScatter()
+
+// Start building plot:
+data.buildPlot()
+```
+
+## Providing independently axis values
+
+Second API provides possibility to independently provide x and y values.
+
+Examples:
+
+```scala
+
+// Plot bar chart:
+SPlot.plotBar(Seq(1,2), Seq(1,4))
+
+// Plot line chart:
+SPlot.plotLine(Seq(1,2), Seq(1,4))
+
+// Plot scatter chart:
+SPlot.plotScatter(Seq(1,2), Seq(1,4))
+
+// Start building plot:
+SPlot.buildPlot(Seq(1,2), Seq(1,4))
+```
+
 # Supported charts
 
-- Bar
-- Scatter
-- Line
-- Histogram
+- [Bar](#bar)
+- [Scatter](#scatter)
+- [Line](#line)
+- [Histogram](#histogram)
+- [Bubble](#bubble)
+- [Pie](#pie)
+- [Area](#area)
 
 > Please note that all below examples **require** importing:
 
@@ -190,6 +256,14 @@ data.plotLine(_.age, _.income)
 
 ![](images/line_age_income.png)
 
+### Line chart for timeseries data
+
+```scala
+timeseriesData2017.plotLine()
+```
+
+![](images/line_timeseries.png)
+
 ## Histogram
 
 ### Histogram for sequence of numbers
@@ -201,6 +275,66 @@ gaussians.plotHistogram(100)
 ```
 
 ![](images/histogram_for_gaussians.png)
+
+### Histogram for categorical data
+
+```scala
+people
+    .buildPlot()
+    .histogramForCategories(_.education)
+    .size(400, 300)
+    .titles("People by education", "Education", "Count")
+    .legendVisible(false)
+    .display()
+```
+
+![](images/histogram_for_categories.png)
+
+## Bubble chart
+
+```scala
+  Seq(
+    (1, 1, 9.0),
+    (1, 2, 40.0),
+    (3, 2, 60.0),
+    (2, 2, 90.0),
+    (1, 3, 30.0),
+    (2, 3, 40.0)
+  )
+  .buildPlot()
+  .bubble(_._1, _._2, _._3)
+  .display()
+```
+
+![](images/bubble_chart.png)
+
+## Pie
+
+```scala
+Seq(
+    ("DE", 81),
+    ("TR", 72),
+    ("FR", 63),
+    ("UK", 62),
+    ("IT", 61)
+  )
+  .plotPie()
+```
+
+![](images/pie_chart.png)
+
+## Area
+
+```scala
+Seq(
+    (1.0, 1.0),
+    (2.0, 4.0),
+    (3.0, 9.0)
+  )
+  .plotArea()
+```
+
+![](images/area_chart.png)
 
 # Multiple series
 
@@ -220,6 +354,8 @@ people
 
 ## Grouping by cols
 
+### Scatter plot
+
 ```scala
 people
     .buildPlot()
@@ -229,6 +365,19 @@ people
 ```
 
 ![](images/people_groupby_country.png)
+
+### Histogram
+
+```scala
+people
+    .buildPlot()
+    .colsBy(_.education)
+    .histogram(_.age, 50)
+    .size(1200, 400)
+    .display()
+```
+
+![](images/histogram_multiple_columns.png)
 
 ## Grouping by rows
 
@@ -287,6 +436,49 @@ people
 ```
 
 ![](images/scatter_chart_with_multiple_columns_and_series.png)
+
+# Aggregation functions
+
+SPlot enables aggregating your data before displaying chart.
+
+To start using functions you need to import:
+```scala
+import com.datawizards.splot.functions._
+```
+
+Currently supported aggregation functions:
+
+- count
+- mean
+- sum
+
+## Calculating count
+
+```scala
+  people
+    .buildPlot()
+    .barWithAggregations(_.education, count())
+```
+
+![](images/bar_chart_with_count_aggregation.png)
+
+## Calculating mean
+
+```scala
+  people
+    .buildPlot()
+    .barWithAggregations(_.country, mean(_.income))
+```
+
+![](images/bar_chart_with_mean_aggregation.png)
+
+## Calculating sum
+
+```scala
+  people
+    .buildPlot()
+    .barWithAggregations(_.country, sum(_.income))
+```
 
 # Saving plot to file
 
@@ -360,6 +552,44 @@ Seq(1.0, 4.0, 9.0)
 ```
 
 ![](images/bar_chart_hide_legend.png)
+
+## Chart themes
+
+Currently supported themes:
+
+![](images/ggplot_theme.png) ![](images/matplot_theme.png) ![](images/xchart_theme.png) ![](images/splot_theme.png)
+
+To change theme you need to call method *theme()*:
+
+```scala
+data
+    .buildPlot()
+    .bar()
+    .theme(PlotTheme.GGPlot2)
+    .display()
+```
+
+## Annotations
+
+```scala
+Seq(1, 4, 9)
+    .buildPlot()
+    .bar()
+    .showAnnotations(true)
+    .display()
+```
+
+![](images/annotations.png)
+
+# Bugs
+
+Please report any bugs or submit feature requests to [SPlot Github issue tracker](https://github.com/piotr-kalanski/SPlot/issues).
+
+# Credits
+
+| Library | Category | License |
+| ------- | -------- | ------- |
+| [XChart](https://github.com/timmolter/XChart) | Graphing | [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) |
 
 # Contact
 
