@@ -10,7 +10,7 @@ import com.datawizards.splot.model.PlotType
 @RunWith(classOf[JUnitRunner])
 class BarPlotTest extends SPlotBaseTest {
   test("Bar") {
-    val data = Seq(1.0, 4.0, 9.0)
+    val data = Seq(1, 4, 9)
 
     data.plotBar(unitTestsDevice)
 
@@ -109,6 +109,42 @@ class BarPlotTest extends SPlotBaseTest {
 
     assertPlotXYAxisValues(Seq(1,2,3), Seq(101,102,103), plotCol1.series.head)
     assertPlotXYAxisValues(Seq(1,2), Seq(201,202), plotCol2.series.head)
+  }
+
+  test("IterablePlot[T].plotBar(x)") {
+    Seq((11,"a"),(12,"b")).plotBar(_._1)
+    assert(getLastPlot.plotType == PlotType.Bar)
+    assertPlotXYAxisValues(Seq(1,2), Seq(11,12), getLastPlotFirstSeries)
+  }
+
+  test("IterablePlot[T].plotBar(x,y)") {
+    Seq((11,"a"),(12,"b")).plotBar(_._2, _._1)
+    assert(getLastPlot.plotType == PlotType.Bar)
+    assertPlotXYAxisValues(Seq("a", "b"), Seq(11,12), getLastPlotFirstSeries)
+  }
+
+  test("IterableDoublePlot.plotBar()") {
+    Seq(11.0, 12.0).plotBar()
+    assert(getLastPlot.plotType == PlotType.Bar)
+    assertPlotXYAxisValues(Seq(1,2), Seq(11.0,12.0), getLastPlotFirstSeries)
+  }
+
+  test("IterableIntPlot.plotBar()") {
+    Seq(11, 12).plotBar()
+    assert(getLastPlot.plotType == PlotType.Bar)
+    assertPlotXYAxisValues(Seq(1,2), Seq(11,12), getLastPlotFirstSeries)
+  }
+
+  test("IterableIntPlot.plotBar(device)") {
+    Seq(11, 12).plotBar(unitTestsDevice)
+    assert(getLastPlot.plotType == PlotType.Bar)
+    assertPlotXYAxisValues(Seq(1,2), Seq(11,12), getLastPlotFirstSeries)
+  }
+
+  test("IterablePairOfXYAxis.plotBar(x,y)") {
+    Seq(("a",11),("b",12)).plotBar()
+    assert(getLastPlot.plotType == PlotType.Bar)
+    assertPlotXYAxisValues(Seq("a", "b"), Seq(11,12), getLastPlotFirstSeries)
   }
 
 }

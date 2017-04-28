@@ -1,6 +1,7 @@
 package com.datawizards.splot
 
 import java.util.Date
+
 import com.datawizards.splot.builders.PlotBuilder
 import com.datawizards.splot.configuration.SPlotDefaults
 import com.datawizards.splot.device.Device
