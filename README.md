@@ -2,6 +2,11 @@
 
 SPlot is Scala library for data visualization.
 
+[![Build Status](https://api.travis-ci.org/piotr-kalanski/SPlot.png?branch=development)](https://api.travis-ci.org/piotr-kalanski/SPlot.png?branch=development)
+[![codecov.io](http://codecov.io/github/piotr-kalanski/SPlot/coverage.svg?branch=development)](http://codecov.io/github/piotr-kalanski/SPlot/coverage.svg?branch=development)
+[<img src="https://img.shields.io/maven-central/v/com.github.piotr-kalanski/splot.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|a%3A%22splot%22)
+[![License](http://img.shields.io/:license-Apache%202-red.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 # Goals
 
 - Provide simple API in Scala for data visualization similar to ggplot (http://ggplot2.org/) and Seaborn (https://seaborn.pydata.org/)
@@ -54,6 +59,7 @@ Seq(1.0, 4.0, 9.0).plotBar()
 - [Histogram](#histogram)
 - [Bubble](#bubble)
 - [Pie](#pie)
+- [Area](#area)
 
 > Please note that all below examples **require** importing:
 
@@ -254,12 +260,23 @@ Seq(
     ("UK", 62),
     ("IT", 61)
   )
-  .buildPlot()
-  .pie()
-  .display()
+  .plotPie()
 ```
 
 ![](images/pie_chart.png)
+
+## Area
+
+```scala
+Seq(
+    (1.0, 1.0),
+    (2.0, 4.0),
+    (3.0, 9.0)
+  )
+  .plotArea()
+```
+
+![](images/area_chart.png)
 
 # Multiple series
 
@@ -484,16 +501,6 @@ data
 # Bugs
 
 Please report any bugs or submit feature requests to [SPlot Github issue tracker](https://github.com/piotr-kalanski/SPlot/issues).
-
-# Continuous Integration
-
-[![Build Status](https://api.travis-ci.org/piotr-kalanski/SPlot.png?branch=development)](https://api.travis-ci.org/piotr-kalanski/SPlot.png?branch=development)
-
-[Build History](https://travis-ci.org/piotr-kalanski/SPlot/builds)
-
-# Code coverage
-
-[![codecov.io](http://codecov.io/github/piotr-kalanski/SPlot/coverage.svg?branch=development)](http://codecov.io/github/piotr-kalanski/SPlot/coverage.svg?branch=development)
 
 # Credits
 

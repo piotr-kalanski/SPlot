@@ -20,6 +20,7 @@ object SPlotToXChartMapper {
       case PlotType.Histogram => mapCategoryChart(plot)
       case PlotType.Bubble => mapBubbleChart(plot)
       case PlotType.Pie => mapPieChart(plot)
+      case PlotType.Area => mapAreaChart(plot)
       case _ => throw new Exception("Unknown plot type")
     }
   }
@@ -32,6 +33,7 @@ object SPlotToXChartMapper {
       case PlotType.Histogram => mapCategoryChartsGrid(plotsGrid)
       case PlotType.Bubble => mapBubbleChartsGrid(plotsGrid)
       case PlotType.Pie => mapPieChartsGrid(plotsGrid)
+      case PlotType.Area => mapAreaChartsGrid(plotsGrid)
       case _ => throw new Exception("Unknown plot type")
     }
   }
@@ -50,6 +52,12 @@ object SPlotToXChartMapper {
 
   private def mapLineChartsGrid(plotsGrid: PlotsGrid): List[Chart[_ <: Styler, _ <: Series]] = {
     val charts = plotsGrid.plots.map(mapLineChart).toList
+    charts.foreach(ch => ch.getStyler.setLegendVisible(false))
+    charts
+  }
+
+  private def mapAreaChartsGrid(plotsGrid: PlotsGrid): List[Chart[_ <: Styler, _ <: Series]] = {
+    val charts = plotsGrid.plots.map(mapAreaChart).toList
     charts.foreach(ch => ch.getStyler.setLegendVisible(false))
     charts
   }
@@ -109,6 +117,12 @@ object SPlotToXChartMapper {
   private def mapScatterChart(plot: Plot): XYChart = {
     val chart = mapXYChart(plot)
     chart.getStyler.setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter)
+    chart
+  }
+
+  private def mapAreaChart(plot: Plot): XYChart = {
+    val chart = mapXYChart(plot)
+    chart.getStyler.setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Area)
     chart
   }
 

@@ -217,4 +217,15 @@ object SaveExampleImagesToFiles extends App {
   .pie()
   .size(400, 300)
   .save(exportPath+"pie_chart.png", format)
+
+  Seq(
+    (1.0, 1.0),
+    (2.0, 4.0),
+    (3.0, 9.0)
+  )
+  .buildPlot()
+  .area()
+  .size(400, 300)
+  .save(exportPath+"area_chart.png", format)
+
 }
