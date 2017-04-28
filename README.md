@@ -75,16 +75,16 @@ Examples:
 ```scala
 val data = Seq((1,1),(2,2))
 
-# Plot bar chart:
+// Plot bar chart:
 data.plotBar()
 
-# Plot line chart:
+// Plot line chart:
 data.plotLine()
 
-# Plot scatter chart:
+// Plot scatter chart:
 data.plotScatter()
 
-# Start building plot:
+// Start building plot:
 data.buildPlot()
 ```
 
@@ -96,16 +96,16 @@ Examples:
 
 ```scala
 
-# Plot bar chart:
+// Plot bar chart:
 SPlot.plotBar(Seq(1,2), Seq(1,4))
 
-# Plot line chart:
+// Plot line chart:
 SPlot.plotLine(Seq(1,2), Seq(1,4))
 
-# Plot scatter chart:
+// Plot scatter chart:
 SPlot.plotScatter(Seq(1,2), Seq(1,4))
 
-# Start building plot:
+// Start building plot:
 SPlot.buildPlot(Seq(1,2), Seq(1,4))
 ```
 
@@ -568,6 +568,18 @@ data
     .theme(PlotTheme.GGPlot2)
     .display()
 ```
+
+## Annotations
+
+```scala
+Seq(1, 4, 9)
+    .buildPlot()
+    .bar()
+    .showAnnotations(true)
+    .display()
+```
+
+![](images/annotations.png)
 
 # Bugs
 

@@ -16,7 +16,8 @@ object Plot {
                  plotSeriesCalculator: PlotSeriesCalculator[T],
                  seriesGroupFunction: T => Any,
                  legendVisible: Option[Boolean],
-                 theme: PlotTheme
+                 theme: PlotTheme,
+                 annotations: Option[Boolean] = None
   ): Plot = {
 
     val dataGrouped = data.groupBy(seriesGroupFunction)
@@ -34,7 +35,8 @@ object Plot {
       yTitle = yTitle,
       series = series,
       legendVisible = legendVisible,
-      theme = theme
+      theme = theme,
+      annotations = annotations
     )
   }
 
@@ -49,7 +51,8 @@ class Plot (
   val yTitle: String,
   val series: Iterable[PlotSeries],
   val legendVisible: Option[Boolean],
-  val theme: PlotTheme
+  val theme: PlotTheme,
+  val annotations: Option[Boolean] = None
 ) {
 
   override def toString: String = {

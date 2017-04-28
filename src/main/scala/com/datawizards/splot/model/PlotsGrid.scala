@@ -17,7 +17,8 @@ object PlotsGrid {
                  seriesGroupFunction: T => Any,
                  totalWidth: Int,
                  totalHeight: Int,
-                 theme: PlotTheme
+                 theme: PlotTheme,
+                 annotations: Option[Boolean] = None
   ): PlotsGrid = {
 
     val dataGrouped = data
@@ -45,7 +46,8 @@ object PlotsGrid {
           yTitle = "",
           series = series,
           legendVisible = None,
-          theme = theme
+          theme = theme,
+          annotations = annotations
         )
       }
 
