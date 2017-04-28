@@ -40,6 +40,42 @@ class LinePlotTest extends SPlotBaseTest {
     assertPlotXYAxisValues(xs, ys, getLastPlotFirstSeries)
   }
 
+  test("IterablePlot[T].plotLine(x)") {
+    Seq((11,"a"),(12,"b")).plotLine(_._1)
+    assert(getLastPlot.plotType == PlotType.Line)
+    assertPlotXYAxisValues(Seq(1,2), Seq(11,12), getLastPlotFirstSeries)
+  }
+
+  test("IterablePlot[T].plotLine(x,y)") {
+    Seq((11,"a"),(12,"b")).plotLine(_._2, _._1)
+    assert(getLastPlot.plotType == PlotType.Line)
+    assertPlotXYAxisValues(Seq("a", "b"), Seq(11,12), getLastPlotFirstSeries)
+  }
+
+  test("IterableDoublePlot.plotLine()") {
+    Seq(11.0, 12.0).plotLine()
+    assert(getLastPlot.plotType == PlotType.Line)
+    assertPlotXYAxisValues(Seq(1,2), Seq(11.0,12.0), getLastPlotFirstSeries)
+  }
+
+  test("IterableIntPlot.plotLine()") {
+    Seq(11, 12).plotLine()
+    assert(getLastPlot.plotType == PlotType.Line)
+    assertPlotXYAxisValues(Seq(1,2), Seq(11,12), getLastPlotFirstSeries)
+  }
+
+  test("IterableIntPlot.plotLine(device)") {
+    Seq(11, 12).plotLine(unitTestsDevice)
+    assert(getLastPlot.plotType == PlotType.Line)
+    assertPlotXYAxisValues(Seq(1,2), Seq(11,12), getLastPlotFirstSeries)
+  }
+
+  test("IterablePairOfXYAxis.plotLine(x,y)") {
+    Seq(("a",11),("b",12)).plotLine()
+    assert(getLastPlot.plotType == PlotType.Line)
+    assertPlotXYAxisValues(Seq("a", "b"), Seq(11,12), getLastPlotFirstSeries)
+  }
+
   private def date(year: Int, month: Int, day: Int): Date = {
     val cal = Calendar.getInstance()
     cal.set(year, month-1, day)

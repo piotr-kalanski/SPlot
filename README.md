@@ -7,6 +7,17 @@ SPlot is Scala library for data visualization.
 [<img src="https://img.shields.io/maven-central/v/com.github.piotr-kalanski/splot.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|a%3A%22splot%22)
 [![License](http://img.shields.io/:license-Apache%202-red.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+# Table of contents
+
+- [Goals](#goals)
+- [Getting started](#getting-started)
+- [API possibilities](#api-possibilities)
+- [Supported charts](#supported-charts)
+- [Multiple charts](#multiple-charts)
+- [Aggregation functions](#aggregation-functions)
+- [Saving plot to file](#saving-plot-to-file)
+- [Customizations](#customizations)
+
 # Goals
 
 - Provide simple API in Scala for data visualization similar to ggplot (http://ggplot2.org/) and Seaborn (https://seaborn.pydata.org/)
@@ -40,7 +51,7 @@ Import implicits, which adds methods to Scala collection enabling plotting:
 import com.datawizards.splot.api.implicits._
 ```
 
-# Basic example
+## Basic example
 
 To plot bar chart using Scala sequence you need to call one method:
 ```scala
@@ -50,6 +61,53 @@ Seq(1.0, 4.0, 9.0).plotBar()
 ```
 
 ![](images/basic_bar.png)
+
+# API possibilities
+
+SPlot provides two API's for displaying plots:
+
+## Additional methods on collections
+
+First API enrich Scala collections providing additional methods for plotting charts.
+
+Examples:
+
+```scala
+val data = Seq((1,1),(2,2))
+
+# Plot bar chart:
+data.plotBar()
+
+# Plot line chart:
+data.plotLine()
+
+# Plot scatter chart:
+data.plotScatter()
+
+# Start building plot:
+data.buildPlot()
+```
+
+## Providing independently axis values
+
+Second API provides possibility to independently provide x and y values.
+
+Examples:
+
+```scala
+
+# Plot bar chart:
+SPlot.plotBar(Seq(1,2), Seq(1,4))
+
+# Plot line chart:
+SPlot.plotLine(Seq(1,2), Seq(1,4))
+
+# Plot scatter chart:
+SPlot.plotScatter(Seq(1,2), Seq(1,4))
+
+# Start building plot:
+SPlot.buildPlot(Seq(1,2), Seq(1,4))
+```
 
 # Supported charts
 
@@ -383,6 +441,11 @@ people
 
 SPlot enables aggregating your data before displaying chart.
 
+To start using functions you need to import:
+```scala
+import com.datawizards.splot.functions._
+```
+
 Currently supported aggregation functions:
 
 - count
@@ -408,6 +471,14 @@ Currently supported aggregation functions:
 ```
 
 ![](images/bar_chart_with_mean_aggregation.png)
+
+## Calculating sum
+
+```scala
+  people
+    .buildPlot()
+    .barWithAggregations(_.country, sum(_.income))
+```
 
 # Saving plot to file
 

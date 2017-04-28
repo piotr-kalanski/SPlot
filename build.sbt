@@ -13,3 +13,7 @@ libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 libraryDependencies += "junit" % "junit" % "4.10" % "test"
 
 coverageExcludedPackages := "com.datawizards.splot.examples.*"
+
+concurrentRestrictions in Global := Seq(
+  Tags.limit(Tags.Test, 1)
+)

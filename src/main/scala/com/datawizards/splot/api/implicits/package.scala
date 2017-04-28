@@ -8,6 +8,33 @@ import com.datawizards.splot.model.PlotAxisValues.{XAxisValueType, XAxisValueTyp
 
 package object implicits {
 
+  object SPlot {
+    def buildPlot(x:Iterable[XAxisValueType], y:Iterable[YAxisValueType]): PlotBuilderForPairOfXYAxis
+      = new PlotBuilderForPairOfXYAxis(x zip y)
+
+    def buildPlot(y:Iterable[Double]): PlotBuilderForDouble
+      = new PlotBuilderForDouble(y)
+
+    def plotBar(x:Iterable[XAxisValueType], y:Iterable[YAxisValueType]): Unit =
+      buildPlot(x,y).bar().display()
+
+    def plotLine(x:Iterable[XAxisValueType], y:Iterable[YAxisValueType]): Unit =
+      buildPlot(x,y).line().display()
+
+    def plotBar(y:Iterable[Double]): Unit = buildPlot(y).bar().display()
+
+    def plotLine(y:Iterable[Double]): Unit = buildPlot(y).line().display()
+
+    def plotScatter(x:Iterable[XAxisValueType], y:Iterable[YAxisValueType]): Unit =
+      buildPlot(x,y).scatter().display()
+
+    def plotArea(x:Iterable[XAxisValueType], y:Iterable[YAxisValueType]): Unit =
+      buildPlot(x,y).area().display()
+
+    def plotHistogram(y:Iterable[Double], bins: Int): Unit =
+      PlotBuilder(y).histogram(y => y, bins).display()
+  }
+
   implicit def convertIterable[T](x: Iterable[T]): IterablePlot[T] =
     new IterablePlot(x)
 

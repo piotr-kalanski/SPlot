@@ -25,6 +25,22 @@ class ThemeCustomizationsTest extends SPlotBaseTest {
       .display(unitTestsDevice)
 
     assert(getLastPlot.theme == PlotTheme.Matlab)
+
+    data
+      .buildPlot()
+      .bar()
+      .theme(PlotTheme.XChart)
+      .display(unitTestsDevice)
+
+    assert(getLastPlot.theme == PlotTheme.XChart)
+
+    data
+      .buildPlot()
+      .bar()
+      .theme(PlotTheme.SPlot)
+      .display(unitTestsDevice)
+
+    assert(getLastPlot.theme == PlotTheme.SPlot)
   }
 
 }
