@@ -54,6 +54,7 @@ Seq(1.0, 4.0, 9.0).plotBar()
 - [Histogram](#histogram)
 - [Bubble](#bubble)
 - [Pie](#pie)
+- [Area](#area)
 
 > Please note that all below examples **require** importing:
 
@@ -254,12 +255,23 @@ Seq(
     ("UK", 62),
     ("IT", 61)
   )
-  .buildPlot()
-  .pie()
-  .display()
+  .plotPie()
 ```
 
 ![](images/pie_chart.png)
+
+## Area
+
+```scala
+Seq(
+    (1.0, 1.0),
+    (2.0, 4.0),
+    (3.0, 9.0)
+  )
+  .plotArea()
+```
+
+![](images/area_chart.png)
 
 # Multiple series
 

@@ -189,6 +189,29 @@ class PlotBuilder[T](data: Iterable[T]) {
   }
 
   /**
+    * Select area chart
+    *
+    * @param values function mapping element of collection to values of line area
+    */
+  def area(values: T => YAxisValueType): this.type = {
+    plotType = PlotType.Area
+    mapValues(values)
+    this
+  }
+
+  /**
+    * Select line chart
+    *
+    * @param x function mapping element of collection to x values
+    * @param y function mapping element of collection to y values
+    */
+  def area(x: T => XAxisValueType, y: T => YAxisValueType): this.type = {
+    plotType = PlotType.Area
+    mapXY(x, y)
+    this
+  }
+
+  /**
     * Change chart title
     *
     * @param title new chart title
@@ -424,6 +447,16 @@ class PlotBuilderForDouble(data: Iterable[Double]) extends PlotBuilder[Double](d
     */
   def pie(): this.type = pie(x => x)
 
+  /**
+    * Select line chart
+    */
+  def line(): this.type = line(x => x)
+
+  /**
+    * Select area chart
+    */
+  def area(): this.type = area(x => x)
+
 }
 
 class PlotBuilderForInt(data: Iterable[Int]) extends PlotBuilder[Int](data) {
@@ -454,6 +487,16 @@ class PlotBuilderForInt(data: Iterable[Int]) extends PlotBuilder[Int](data) {
     * Select pie chart
     */
   def pie(): this.type = pie(x => x)
+
+  /**
+    * Select line chart
+    */
+  def line(): this.type = line(x => x)
+
+  /**
+    * Select area chart
+    */
+  def area(): this.type = area(x => x)
 
 }
 
@@ -488,6 +531,14 @@ class PlotBuilderForPairOfXYAxis(data: Iterable[(XAxisValueType, YAxisValueType)
     */
   def pie(): this.type = {
     pie(_._1, _._2)
+    this
+  }
+
+  /**
+    * Select area chart
+    */
+  def area(): this.type = {
+    area(_._1, _._2)
     this
   }
 

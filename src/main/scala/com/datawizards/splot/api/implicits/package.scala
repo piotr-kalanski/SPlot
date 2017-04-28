@@ -75,10 +75,32 @@ package object implicits {
     /**
       * Plot line chart
       *
+      * @param values function mapping element of collection to values
+      */
+    def plotLine(values: T => YAxisValueType): Unit = plotBuilder.line(values).display()
+
+    /**
+      * Plot line chart
+      *
       * @param x function mapping element of collection to x values
       * @param y function mapping element of collection to y values
       */
     def plotLine(x: T => XAxisValueType, y: T => YAxisValueType): Unit = plotBuilder.line(x, y).display()
+
+    /**
+      * Plot area chart
+      *
+      * @param values function mapping element of collection to values
+      */
+    def plotArea(values: T => YAxisValueType): Unit = plotBuilder.area(values).display()
+
+    /**
+      * Plot area chart
+      *
+      * @param x function mapping element of collection to x values
+      * @param y function mapping element of collection to y values
+      */
+    def plotArea(x: T => XAxisValueType, y: T => YAxisValueType): Unit = plotBuilder.area(x, y).display()
 
     /**
       * Plot histogram chart
@@ -163,6 +185,30 @@ package object implicits {
       */
     def plotPie(device: Device): Unit = plotBuilder.pie().display(device)
 
+    /**
+      * Plot line chart
+      */
+    def plotLine(): Unit = plotBuilder.line().display()
+
+    /**
+      * Plot line chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotLine(device: Device): Unit = plotBuilder.line().display(device)
+
+    /**
+      * Plot area chart
+      */
+    def plotArea(): Unit = plotBuilder.area().display()
+
+    /**
+      * Plot area chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotArea(device: Device): Unit = plotBuilder.area().display(device)
+
   }
 
   class IterableIntPlot(iterable: Iterable[Int]) {
@@ -204,6 +250,30 @@ package object implicits {
       * @param device device that should be used to display plot
       */
     def plotPie(device: Device): Unit = plotBuilder.pie().display(device)
+
+    /**
+      * Plot line chart
+      */
+    def plotLine(): Unit = plotBuilder.line().display()
+
+    /**
+      * Plot line chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotLine(device: Device): Unit = plotBuilder.line().display(device)
+
+    /**
+      * Plot area chart
+      */
+    def plotArea(): Unit = plotBuilder.area().display()
+
+    /**
+      * Plot area chart
+      *
+      * @param device device that should be used to display plot
+      */
+    def plotArea(device: Device): Unit = plotBuilder.area().display(device)
 
   }
 
@@ -263,6 +333,18 @@ package object implicits {
       * @param device device that should be used to display plot
       */
     def plotPie(device: Device): Unit = plotBuilder.pie().display(device)
+
+
+    /**
+      * Plot area chart
+      */
+    def plotArea(): Unit = plotBuilder.area().display()
+
+    /**
+      * Plot area chart
+      * @param device device that should be used to display plot
+      */
+    def plotArea(device: Device): Unit = plotBuilder.area().display(device)
 
   }
 
