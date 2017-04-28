@@ -34,6 +34,7 @@ class PlotBuilder[T](data: Iterable[T]) {
   private var plotSeriesCalculator: PlotSeriesCalculator[T] = _
   private var legendVisible: Option[Boolean] = None
   private var theme: PlotTheme = SPlotDefaults.PlotTheme
+  private var showAnnotations: Option[Boolean] = None
 
   /**
     * Select bar chart
@@ -325,6 +326,14 @@ class PlotBuilder[T](data: Iterable[T]) {
   }
 
   /**
+    * Whether to show annotations
+    */
+  def showAnnotations(show: Boolean): this.type = {
+    this.showAnnotations = Some(show)
+    this
+  }
+
+  /**
     * Display plot using all selected configuration values
     *
     * @param device device that should be used to display plot
@@ -365,7 +374,8 @@ class PlotBuilder[T](data: Iterable[T]) {
       plotSeriesCalculator = plotSeriesCalculator,
       seriesGroupFunction = seriesGroupFunction,
       legendVisible = legendVisible,
-      theme = theme
+      theme = theme,
+      annotations = showAnnotations
     )
   }
 
@@ -379,7 +389,8 @@ class PlotBuilder[T](data: Iterable[T]) {
       seriesGroupFunction = seriesGroupFunction,
       totalWidth = width,
       totalHeight = height,
-      theme = theme
+      theme = theme,
+      annotations = showAnnotations
     )
   }
 

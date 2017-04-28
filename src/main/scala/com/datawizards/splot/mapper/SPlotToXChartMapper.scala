@@ -129,10 +129,10 @@ object SPlotToXChartMapper {
   private def mapXYChart(plot: Plot): XYChart = {
     val chart = new XYChartBuilder().build()
 
+    mapPlotToChart(plot, chart)
+
     for(series <- plot.series)
       chart.addSeries(series.name, mapXAxisValues(series.xValues), mapYAxisValues(series.yValues))
-
-    mapPlotToChart(plot, chart)
 
     chart
   }
@@ -151,6 +151,11 @@ object SPlotToXChartMapper {
       case c:CategoryChart => c.getStyler
       case c:BubbleChart => c.getStyler
       case c:PieChart => c.getStyler
+    }
+
+    plot.annotations match {
+      case Some(b:Boolean) => styler.setHasAnnotations(b)
+      case None => ()
     }
 
     plot.legendVisible match {

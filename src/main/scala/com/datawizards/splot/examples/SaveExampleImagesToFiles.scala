@@ -228,4 +228,10 @@ object SaveExampleImagesToFiles extends App {
   .size(400, 300)
   .save(exportPath+"area_chart.png", format)
 
+  Seq(1, 4, 9)
+    .buildPlot()
+    .bar()
+    .showAnnotations(true)
+    .size(400, 300)
+    .save(exportPath+"annotations.png", format)
 }
